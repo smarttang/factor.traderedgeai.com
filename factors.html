@@ -383,6 +383,50 @@
       border-left: 3px solid var(--green);
     }
 
+    .pagination-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .pagination-wrap button {
+      padding: 0.5rem 1rem;
+      background: var(--gray-pill);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .pagination-wrap button:hover:not(:disabled) {
+      background: rgba(77, 162, 158, 0.12);
+      border-color: var(--green);
+      color: var(--green-dark);
+    }
+
+    .pagination-wrap button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination-info {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .factors-count-bar {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
     .back-cta {
       text-align: center;
       padding: 3rem 1.5rem;
@@ -617,6 +661,9 @@
         <h2 class="factors-sidebar-title" data-i18n="sidebar_title">按场景筛选</h2>
         <div class="factor-tag-filter" role="group" aria-label="按策略标签筛选" data-i18n-attr="aria-label:sidebar_aria">
           <button type="button" class="tag-btn active" data-tag="" data-i18n="tag_all">全部</button>
+          <span class="filter-group-label" data-i18n="filter_group_type">接口类型</span>
+          <button type="button" class="tag-btn" data-tag="__unified__" data-i18n="tag_unified">统一接口</button>
+          <button type="button" class="tag-btn" data-tag="__standalone__" data-i18n="tag_standalone">独立 API</button>
           <span class="filter-group-label" data-i18n="filter_group_style">交易风格</span>
           <button type="button" class="tag-btn" data-tag="趋势" data-i18n="tag_trend">趋势</button>
           <button type="button" class="tag-btn" data-tag="对冲" data-i18n="tag_hedge">对冲</button>
@@ -628,342 +675,22 @@
           <button type="button" class="tag-btn" data-tag="波动" data-i18n="tag_vol">波动</button>
           <button type="button" class="tag-btn" data-tag="减仓" data-i18n="tag_reduction">减仓</button>
           <button type="button" class="tag-btn" data-tag="组合" data-i18n="tag_composite">组合</button>
+          <button type="button" class="tag-btn" data-tag="动量" data-i18n="tag_momentum">动量</button>
+          <button type="button" class="tag-btn" data-tag="多周期" data-i18n="tag_mtf">多周期</button>
+          <button type="button" class="tag-btn" data-tag="价差" data-i18n="tag_spread">价差</button>
+          <button type="button" class="tag-btn" data-tag="R²" data-i18n="tag_r2">R²</button>
         </div>
       </aside>
 
       <main class="factors-main">
         <h3 class="factors-group-title" data-i18n="factors_group_all">所有算法因子和组合</h3>
-        <div class="factor-list" id="factor-list-handle">
-          <article class="factor-card" data-tags="中长线 波段 趋势 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>EntropyHedge</strong>
-              <span class="factor-id-badge">ID 0</span>
-              <span class="factor-name-en" data-i18n="factor_entropy_sub">熵场与对冲矩阵</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_mid">中长线</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_entropy_desc">基于熵场与分形维的市场状态判断，输出方向、置信度、regime 及建议止损/止盈。</p>
-            <p class="factor-card-mqh">Init("EntropyHedge") 或 TEA_FactorCreate(0)</p>
-          </article>
-          <article class="factor-card" data-tags="网格 马丁 高频 短线">
-            <div class="factor-card-head">
-              <strong>TrendPenalty</strong>
-              <span class="factor-id-badge">ID 1</span>
-              <span class="factor-name-en" data-i18n="factor_trend_sub">趋势与惩罚</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_grid">网格</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-              <span class="factor-tag" data-i18n="tag_high">高频</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_trend_desc">多技术指标与惩罚引擎结合，输出方向、强度、置信度及 0–100 质量分。</p>
-            <p class="factor-card-mqh">Init("TrendPenalty") 或 TEA_FactorCreate(1)</p>
-          </article>
-          <article class="factor-card" data-tags="趋势 货币对冲 对冲 马丁 网格">
-            <div class="factor-card-head">
-              <strong>HedgeRegime</strong>
-              <span class="factor-id-badge">ID 2</span>
-              <span class="factor-name-en" data-i18n="factor_hedge_regime_sub">趋势·震荡·刹车</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-              <span class="factor-tag" data-i18n="tag_grid">网格</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_hedge_regime_desc">R² + 布林带突破 + ATR，输出 regime、刹车、方向与置信度。扩展：TEA_FactorGetBrake、TEA_FactorGetATR。</p>
-            <p class="factor-card-mqh">Init("HedgeRegime") 或 TEA_FactorCreate(2)</p>
-          </article>
-          <article class="factor-card" data-tags="趋势 R² 波段">
-            <div class="factor-card-head">
-              <strong>TrendStrengthBrake</strong>
-              <span class="factor-id-badge">ID 3</span>
-              <span class="factor-name-en" data-i18n="factor_trend_strength_sub">多周期 R²·刹车强度</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_r2">R²</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_trend_strength_desc">多周期 R² + 波动率阈值 + 刹车强度 0~1。扩展：TEA_FactorGetBrakeStrength。</p>
-            <p class="factor-card-mqh">Init("TrendStrengthBrake") 或 TEA_FactorCreate(3)</p>
-          </article>
-          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>VolatilitySpike</strong>
-              <span class="factor-id-badge">ID 4</span>
-              <span class="factor-name-en" data-i18n="factor_volspike_sub">波动率尖峰</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_volspike_desc">检测波动率尖峰，输出 spike_ratio。扩展：TEA_FactorGetVolatilitySpikeRatio。</p>
-            <p class="factor-card-mqh">Init("VolatilitySpike") 或 TEA_FactorCreate(4)</p>
-          </article>
-          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>JumpDetector</strong>
-              <span class="factor-id-badge">ID 5</span>
-              <span class="factor-name-en" data-i18n="factor_jump_sub">跳空/闪崩检测</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_jump_desc">检测跳空与闪崩，输出 jump_score、is_jump。扩展：TEA_FactorGetJumpScore、TEA_FactorGetIsJump。</p>
-            <p class="factor-card-mqh">Init("JumpDetector") 或 TEA_FactorCreate(5)</p>
-          </article>
-          <article class="factor-card" data-tags="多周期 趋势 波段">
-            <div class="factor-card-head">
-              <strong>MultiTFAlign</strong>
-              <span class="factor-id-badge">ID 6</span>
-              <span class="factor-name-en" data-i18n="factor_mtfalign_sub">多周期对齐</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_mtf">多周期</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_mtfalign_desc">多时间框架动量对齐，判断多周期是否共振。</p>
-            <p class="factor-card-mqh">Init("MultiTFAlign") 或 TEA_FactorCreate(6)</p>
-          </article>
-          <article class="factor-card" data-tags="趋势 R² 波段">
-            <div class="factor-card-head">
-              <strong>HurstRegime</strong>
-              <span class="factor-id-badge">ID 7</span>
-              <span class="factor-name-en" data-i18n="factor_hurst_sub">Hurst 指数 regime</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_r2">R²</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_hurst_desc">Hurst 指数判断趋势/均值回归 regime。扩展：TEA_FactorGetHurst。</p>
-            <p class="factor-card-mqh">Init("HurstRegime") 或 TEA_FactorCreate(7)</p>
-          </article>
-          <article class="factor-card factor-card-composite" data-tags="组合 趋势 货币对冲 对冲 马丁 网格">
-            <div class="factor-card-head">
-              <strong>HedgeCore</strong>
-              <span class="factor-id-badge">ID 8</span>
-              <span class="factor-badge-composite" data-i18n="tag_composite">组合</span>
-              <span class="factor-name-en" data-i18n="factor_hedgecore_sub">XAUUSD 对冲一体化</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_composite">组合</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-              <span class="factor-tag" data-i18n="tag_grid">网格</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_hedgecore_desc">内部整合 HedgeRegime + VolatilitySpike + JumpDetector，输出 regime、刹车、ATR、StepScale、VolRegime。</p>
-            <p class="factor-card-mqh">Init("HedgeCore") 或 TEA_FactorCreate(8)</p>
-          </article>
-          <article class="factor-card" data-tags="货币对冲 对冲 马丁 网格">
-            <div class="factor-card-head">
-              <strong>StepScale</strong>
-              <span class="factor-id-badge">ID 9</span>
-              <span class="factor-name-en" data-i18n="factor_stepscale_sub">步长缩放</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-              <span class="factor-tag" data-i18n="tag_grid">网格</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_stepscale_desc">根据波动率输出步长缩放系数 0.5~1.5。扩展：TEA_FactorGetStepScale。</p>
-            <p class="factor-card-mqh">Init("StepScale") 或 TEA_FactorCreate(9)</p>
-          </article>
-          <article class="factor-card" data-tags="动量 趋势 波段">
-            <div class="factor-card-head">
-              <strong>MomentumExhaustion</strong>
-              <span class="factor-id-badge">ID 10</span>
-              <span class="factor-name-en" data-i18n="factor_momentum_exhaust_sub">动量衰竭</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_momentum_exhaust_desc">动量衰竭检测。扩展：TEA_FactorGetExhaustionScore。</p>
-            <p class="factor-card-mqh">Init("MomentumExhaustion") 或 TEA_FactorCreate(10)</p>
-          </article>
-          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>VolatilityRegime</strong>
-              <span class="factor-id-badge">ID 11</span>
-              <span class="factor-name-en" data-i18n="factor_volregime_sub">波动率状态</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_volregime_desc">波动率分级 regime + 缩放系数。扩展：TEA_FactorGetVolRegime、TEA_FactorGetVolScale。</p>
-            <p class="factor-card-mqh">Init("VolatilityRegime") 或 TEA_FactorCreate(11)</p>
-          </article>
-          <article class="factor-card" data-tags="动量 跳空 波动">
-            <div class="factor-card-head">
-              <strong>GapFillScore</strong>
-              <span class="factor-id-badge">ID 12</span>
-              <span class="factor-name-en" data-i18n="factor_gapfill_sub">跳空回补得分</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
-              <span class="factor-tag" data-i18n="tag_gap">跳空</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_gapfill_desc">跳空回补概率得分。扩展：TEA_FactorGetGapFillScore、TEA_FactorGetHasGap。</p>
-            <p class="factor-card-mqh">Init("GapFillScore") 或 TEA_FactorCreate(12)</p>
-          </article>
-          <article class="factor-card" data-tags="趋势 货币对冲 对冲 马丁">
-            <div class="factor-card-head">
-              <strong>AsymmetricBrake</strong>
-              <span class="factor-id-badge">ID 13</span>
-              <span class="factor-name-en" data-i18n="factor_asymbrake_sub">多空独立刹车</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_asymbrake_desc">多空侧独立刹车标志。扩展：TEA_FactorGetBrakeBuy、TEA_FactorGetBrakeSell。</p>
-            <p class="factor-card-mqh">Init("AsymmetricBrake") 或 TEA_FactorCreate(13)</p>
-          </article>
-          <article class="factor-card" data-tags="动量 波动率 波动">
-            <div class="factor-card-head">
-              <strong>VolatilityAdjustedMomentum</strong>
-              <span class="factor-id-badge">ID 14</span>
-              <span class="factor-name-en" data-i18n="factor_vam_sub">波动率调整动量</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
-              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_vam_desc">VAM = 价格变化/即时波动率，动态阈值。扩展：TEA_FactorGetVAM、TEA_FactorGetVAMThreshold。</p>
-            <p class="factor-card-mqh">Init("VolatilityAdjustedMomentum") 或 TEA_FactorCreate(14)</p>
-          </article>
-          <article class="factor-card" data-tags="动量 趋势 波段">
-            <div class="factor-card-head">
-              <strong>AdaptiveTrendIntensity</strong>
-              <span class="factor-id-badge">ID 15</span>
-              <span class="factor-name-en" data-i18n="factor_ati_sub">自适应趋势强度</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_ati_desc">ER + AMA + 趋势强度。扩展：TEA_FactorGetER、TEA_FactorGetTrendIntensity。</p>
-            <p class="factor-card-mqh">Init("AdaptiveTrendIntensity") 或 TEA_FactorCreate(15)</p>
-          </article>
-          <article class="factor-card" data-tags="多周期 趋势 波段">
-            <div class="factor-card-head">
-              <strong>MultiTimeframeResonance</strong>
-              <span class="factor-id-badge">ID 16</span>
-              <span class="factor-name-en" data-i18n="factor_mtr_sub">多周期共振</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_mtf">多周期</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_mtr_desc">多档 EMA 动量对齐，输出 alignment、resonance。扩展：TEA_FactorGetAlignment、TEA_FactorGetResonance。</p>
-            <p class="factor-card-mqh">Init("MultiTimeframeResonance") 或 TEA_FactorCreate(16)</p>
-          </article>
+        <p class="factors-count-bar" id="factors-count-bar"></p>
+        <div class="factor-list" id="factor-list-handle"></div>
+        <div class="pagination-wrap" id="pagination-wrap" style="display:none;">
+          <button type="button" id="pagination-prev" disabled><span data-i18n="pagination_prev">上一页</span></button>
+          <span class="pagination-info" id="pagination-info"></span>
+          <button type="button" id="pagination-next"><span data-i18n="pagination_next">下一页</span></button>
         </div>
-
-        <h3 class="factors-group-title" data-i18n="factors_group_special">特殊算法因子</h3>
-        <div class="factor-list" id="factor-list-standalone">
-          <article class="factor-card" data-tags="价差 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>PairSpreadZ</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_pairspread_sub">价差 Z 分数</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_spread">价差</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_pairspread_desc">双品种价差 Z 分数，固定对冲比率。TEA_PairSpreadZ(closes_a, closes_b, count, hedge_ratio)</p>
-            <p class="factor-card-mqh">TEA_PairSpreadZ</p>
-          </article>
-          <article class="factor-card" data-tags="价差 货币对冲 对冲">
-            <div class="factor-card-head">
-              <strong>CointegrationSpread</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_coint_sub">协整价差 (Kalman)</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_spread">价差</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_coint_desc">金银等协整价差，Kalman 滤波动态对冲比，输出 beta、spread、zscore、signal。TEA_CointegrationSpread</p>
-            <p class="factor-card-mqh">TEA_CointegrationSpread</p>
-          </article>
-          <article class="factor-card" data-tags="区间 趋势 波动">
-            <div class="factor-card-head">
-              <strong>RangePosition</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_rangepos_sub">区间位置</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_range">区间</span>
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_rangepos_desc">当前价格在近期高低区间的相对位置 0~1。TEA_RangePosition</p>
-            <p class="factor-card-mqh">TEA_RangePosition</p>
-          </article>
-          <article class="factor-card" data-tags="会话 波动率 波动">
-            <div class="factor-card-head">
-              <strong>SessionRegime</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_session_sub">会话 regime</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_session">会话</span>
-              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_session_desc">按小时/分钟返回会话 regime 与波动率缩放。TEA_SessionRegime</p>
-            <p class="factor-card-mqh">TEA_SessionRegime</p>
-          </article>
-          <article class="factor-card" data-tags="削单 减仓 货币对冲 对冲 马丁">
-            <div class="factor-card-head">
-              <strong>HedgeImbalance</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_hedgeimb_sub">对冲失衡</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_reduction">削单</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_hedgeimb_desc">多空盈亏失衡时输出刹车建议。TEA_HedgeImbalance</p>
-            <p class="factor-card-mqh">TEA_HedgeImbalance</p>
-          </article>
-          <article class="factor-card" data-tags="削单 减仓 货币对冲 对冲 马丁">
-            <div class="factor-card-head">
-              <strong>ReductionAdvisor</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_reduction_sub">削单建议</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_reduction">削单</span>
-              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
-              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_reduction_desc">单侧/跨侧削单推荐，头尾盈利段自动识别，regime 自适应。</p>
-            <p class="factor-card-mqh" data-i18n="factor_standalone_reduction">TEA_ReductionRecommend</p>
-          </article>
-          <article class="factor-card" data-tags="趋势 R² 波段">
-            <div class="factor-card-head">
-              <strong>RSquared</strong>
-              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
-              <span class="factor-name-en" data-i18n="factor_rsquared_sub">趋势强度 R²</span>
-            </div>
-            <div class="factor-tags">
-              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
-              <span class="factor-tag" data-i18n="tag_r2">R²</span>
-            </div>
-            <p class="factor-card-desc" data-i18n="factor_rsquared_desc">Pearson / Theil-Sen / 指数加权 R²，返回 0~1 趋势强度。</p>
-            <p class="factor-card-mqh" data-i18n="factor_standalone_rsquared">TEA_RSquared / TEA_RSquaredEx</p>
-          </article>
-        </div>
-
         <div class="back-cta">
           <a href="api.html#quick" data-i18n="api_quick_start">API 快速接入</a>
           <span style="color: var(--gray-border); margin: 0 0.5rem;">|</span>
@@ -990,58 +717,222 @@
   <script src="js/i18n.js"></script>
   <script>
     (function () {
-      var lang = window.I18N.getLang();
-      window.I18N.applyLang(lang, 'factors');
-      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
-        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-      });
-      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var l = btn.getAttribute('data-lang');
-          window.I18N.setLang(l);
-          window.I18N.applyLang(l, 'factors');
-          document.querySelectorAll('.nav-lang .lang-btn').forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-        });
-      });
-    })();
-    (function () {
-      var nav = document.getElementById('main-nav');
-      var toggle = document.getElementById('nav-toggle');
-      if (nav && toggle) toggle.addEventListener('click', function () { nav.classList.toggle('nav-open'); });
-    })();
-    (function () {
-      var cards = document.querySelectorAll('.factor-card');
-      var btns = document.querySelectorAll('.factor-tag-filter .tag-btn');
-      var titles = document.querySelectorAll('.factors-group-title');
+      var PER_PAGE = 12;
+      var FACTORS = [
+        { id: 0, name: 'EntropyHedge', tags: ['中长线','波段','趋势','对冲'], subKey: 'factor_entropy_sub', descKey: 'factor_entropy_desc', mqh: 'Init("EntropyHedge") 或 TEA_FactorCreate(0)', isComposite: false, isStandalone: false },
+        { id: 1, name: 'TrendPenalty', tags: ['网格','马丁','短线'], subKey: 'factor_trend_sub', descKey: 'factor_trend_desc', mqh: 'Init("TrendPenalty") 或 TEA_FactorCreate(1)', isComposite: false, isStandalone: false },
+        { id: 2, name: 'HedgeRegime', tags: ['趋势','对冲','马丁','网格'], subKey: 'factor_hedge_regime_sub', descKey: 'factor_hedge_regime_desc', mqh: 'Init("HedgeRegime") 或 TEA_FactorCreate(2)', isComposite: false, isStandalone: false },
+        { id: 3, name: 'TrendStrengthBrake', tags: ['趋势','R²','波段'], subKey: 'factor_trend_strength_sub', descKey: 'factor_trend_strength_desc', mqh: 'Init("TrendStrengthBrake") 或 TEA_FactorCreate(3)', isComposite: false, isStandalone: false },
+        { id: 4, name: 'VolatilitySpike', tags: ['波动','对冲'], subKey: 'factor_volspike_sub', descKey: 'factor_volspike_desc', mqh: 'Init("VolatilitySpike") 或 TEA_FactorCreate(4)', isComposite: false, isStandalone: false },
+        { id: 5, name: 'JumpDetector', tags: ['波动','对冲'], subKey: 'factor_jump_sub', descKey: 'factor_jump_desc', mqh: 'Init("JumpDetector") 或 TEA_FactorCreate(5)', isComposite: false, isStandalone: false },
+        { id: 6, name: 'MultiTFAlign', tags: ['多周期','趋势','波段'], subKey: 'factor_mtfalign_sub', descKey: 'factor_mtfalign_desc', mqh: 'Init("MultiTFAlign") 或 TEA_FactorCreate(6)', isComposite: false, isStandalone: false },
+        { id: 7, name: 'HurstRegime', tags: ['趋势','R²','波段'], subKey: 'factor_hurst_sub', descKey: 'factor_hurst_desc', mqh: 'Init("HurstRegime") 或 TEA_FactorCreate(7)', isComposite: false, isStandalone: false },
+        { id: 8, name: 'HedgeCore', tags: ['组合','趋势','对冲','马丁','网格'], subKey: 'factor_hedgecore_sub', descKey: 'factor_hedgecore_desc', mqh: 'Init("HedgeCore") 或 TEA_FactorCreate(8)', isComposite: true, isStandalone: false },
+        { id: 9, name: 'StepScale', tags: ['对冲','马丁','网格'], subKey: 'factor_stepscale_sub', descKey: 'factor_stepscale_desc', mqh: 'Init("StepScale") 或 TEA_FactorCreate(9)', isComposite: false, isStandalone: false },
+        { id: 10, name: 'MomentumExhaustion', tags: ['动量','趋势','波段'], subKey: 'factor_momentum_exhaust_sub', descKey: 'factor_momentum_exhaust_desc', mqh: 'Init("MomentumExhaustion") 或 TEA_FactorCreate(10)', isComposite: false, isStandalone: false },
+        { id: 11, name: 'VolatilityRegime', tags: ['波动','对冲'], subKey: 'factor_volregime_sub', descKey: 'factor_volregime_desc', mqh: 'Init("VolatilityRegime") 或 TEA_FactorCreate(11)', isComposite: false, isStandalone: false },
+        { id: 12, name: 'GapFillScore', tags: ['动量','波动'], subKey: 'factor_gapfill_sub', descKey: 'factor_gapfill_desc', mqh: 'Init("GapFillScore") 或 TEA_FactorCreate(12)', isComposite: false, isStandalone: false },
+        { id: 13, name: 'AsymmetricBrake', tags: ['趋势','对冲','马丁'], subKey: 'factor_asymbrake_sub', descKey: 'factor_asymbrake_desc', mqh: 'Init("AsymmetricBrake") 或 TEA_FactorCreate(13)', isComposite: false, isStandalone: false },
+        { id: 14, name: 'VolatilityAdjustedMomentum', tags: ['动量','波动'], subKey: 'factor_vam_sub', descKey: 'factor_vam_desc', mqh: 'Init("VolatilityAdjustedMomentum") 或 TEA_FactorCreate(14)', isComposite: false, isStandalone: false },
+        { id: 15, name: 'AdaptiveTrendIntensity', tags: ['动量','趋势','波段'], subKey: 'factor_ati_sub', descKey: 'factor_ati_desc', mqh: 'Init("AdaptiveTrendIntensity") 或 TEA_FactorCreate(15)', isComposite: false, isStandalone: false },
+        { id: 16, name: 'MultiTimeframeResonance', tags: ['多周期','趋势','波段'], subKey: 'factor_mtr_sub', descKey: 'factor_mtr_desc', mqh: 'Init("MultiTimeframeResonance") 或 TEA_FactorCreate(16)', isComposite: false, isStandalone: false },
+        { id: 17, name: 'ChoppinessIndex', tags: ['波动','波段'], subKey: 'factor_choppiness_sub', descKey: 'factor_choppiness_desc', mqh: 'Init("ChoppinessIndex") 或 TEA_FactorCreate(17)', isComposite: false, isStandalone: false },
+        { id: 18, name: 'RealizedVolatility', tags: ['波动'], subKey: 'factor_realized_volatility_sub', descKey: 'factor_realized_volatility_desc', mqh: 'Init("RealizedVolatility") 或 TEA_FactorCreate(18)', isComposite: false, isStandalone: false },
+        { id: 19, name: 'VarianceRatio', tags: ['趋势','R²'], subKey: 'factor_variance_ratio_sub', descKey: 'factor_variance_ratio_desc', mqh: 'Init("VarianceRatio") 或 TEA_FactorCreate(19)', isComposite: false, isStandalone: false },
+        { id: 20, name: 'Aroon', tags: ['趋势','动量'], subKey: 'factor_aroon_sub', descKey: 'factor_aroon_desc', mqh: 'Init("Aroon") 或 TEA_FactorCreate(20)', isComposite: false, isStandalone: false },
+        { id: 21, name: 'VWAPDeviation', tags: ['波动','短线'], subKey: 'factor_vwap_deviation_sub', descKey: 'factor_vwap_deviation_desc', mqh: 'Init("VWAPDeviation") 或 TEA_FactorCreate(21)', isComposite: false, isStandalone: false },
+        { id: 22, name: 'BBSqueeze', tags: ['趋势','波动'], subKey: 'factor_bbsqueeze_sub', descKey: 'factor_bbsqueeze_desc', mqh: 'Init("BBSqueeze") 或 TEA_FactorCreate(22)', isComposite: false, isStandalone: false },
+        { id: 23, name: 'GarmanKlass', tags: ['波动'], subKey: 'factor_garman_klass_sub', descKey: 'factor_garman_klass_desc', mqh: 'Init("GarmanKlass") 或 TEA_FactorCreate(23)', isComposite: false, isStandalone: false },
+        { id: 24, name: 'Parkinson', tags: ['波动'], subKey: 'factor_parkinson_sub', descKey: 'factor_parkinson_desc', mqh: 'Init("Parkinson") 或 TEA_FactorCreate(24)', isComposite: false, isStandalone: false },
+        { id: 25, name: 'YangZhang', tags: ['波动'], subKey: 'factor_yangzhang_sub', descKey: 'factor_yangzhang_desc', mqh: 'Init("YangZhang") 或 TEA_FactorCreate(25)', isComposite: false, isStandalone: false },
+        { id: 26, name: 'RealizedSkewness', tags: ['波动'], subKey: 'factor_realized_skewness_sub', descKey: 'factor_realized_skewness_desc', mqh: 'Init("RealizedSkewness") 或 TEA_FactorCreate(26)', isComposite: false, isStandalone: false },
+        { id: 27, name: 'RealizedKurtosis', tags: ['波动'], subKey: 'factor_realized_kurtosis_sub', descKey: 'factor_realized_kurtosis_desc', mqh: 'Init("RealizedKurtosis") 或 TEA_FactorCreate(27)', isComposite: false, isStandalone: false },
+        { id: 28, name: 'VolatilityCone', tags: ['波动'], subKey: 'factor_volatility_cone_sub', descKey: 'factor_volatility_cone_desc', mqh: 'Init("VolatilityCone") 或 TEA_FactorCreate(28)', isComposite: false, isStandalone: false },
+        { id: 29, name: 'LinearRegressionSlope', tags: ['趋势','R²'], subKey: 'factor_linear_regression_slope_sub', descKey: 'factor_linear_regression_slope_desc', mqh: 'Init("LinearRegressionSlope") 或 TEA_FactorCreate(29)', isComposite: false, isStandalone: false },
+        { id: 30, name: 'OUParams', tags: ['趋势','波段'], subKey: 'factor_ou_params_sub', descKey: 'factor_ou_params_desc', mqh: 'Init("OUParams") 或 TEA_FactorCreate(30)', isComposite: false, isStandalone: false },
+        { id: 31, name: 'Autocorrelation', tags: ['趋势','动量'], subKey: 'factor_autocorrelation_sub', descKey: 'factor_autocorrelation_desc', mqh: 'Init("Autocorrelation") 或 TEA_FactorCreate(31)', isComposite: false, isStandalone: false },
+        { id: 32, name: 'BBKCSqueeze', tags: ['趋势','波动'], subKey: 'factor_bbkc_squeeze_sub', descKey: 'factor_bbkc_squeeze_desc', mqh: 'Init("BBKCSqueeze") 或 TEA_FactorCreate(32)', isComposite: false, isStandalone: false },
+        { id: 33, name: 'PriceAcceleration', tags: ['动量','短线'], subKey: 'factor_price_acceleration_sub', descKey: 'factor_price_acceleration_desc', mqh: 'Init("PriceAcceleration") 或 TEA_FactorCreate(33)', isComposite: false, isStandalone: false },
+        { id: 34, name: 'VolumeROC', tags: ['动量','波动'], subKey: 'factor_volume_roc_sub', descKey: 'factor_volume_roc_desc', mqh: 'Init("VolumeROC") 或 TEA_FactorCreate(34)', isComposite: false, isStandalone: false },
+        { id: 35, name: 'FRAMA', tags: ['趋势','波段'], subKey: 'factor_frama_sub', descKey: 'factor_frama_desc', mqh: 'Init("FRAMA") 或 TEA_FactorCreate(35)', isComposite: false, isStandalone: false },
+        { id: 36, name: 'HMA', tags: ['趋势','波段'], subKey: 'factor_hma_sub', descKey: 'factor_hma_desc', mqh: 'Init("HMA") 或 TEA_FactorCreate(36)', isComposite: false, isStandalone: false },
+        { id: 37, name: 'TickIntensity', tags: ['波动','短线'], subKey: 'factor_tick_intensity_sub', descKey: 'factor_tick_intensity_desc', mqh: 'Init("TickIntensity") 或 TEA_FactorCreate(37)', isComposite: false, isStandalone: false },
+        { id: 38, name: 'TickRun', tags: ['动量','短线'], subKey: 'factor_tick_run_sub', descKey: 'factor_tick_run_desc', mqh: 'Init("TickRun") 或 TEA_FactorCreate(38)', isComposite: false, isStandalone: false },
+        { id: 39, name: 'TradeClustering', tags: ['波动','短线'], subKey: 'factor_trade_clustering_sub', descKey: 'factor_trade_clustering_desc', mqh: 'Init("TradeClustering") 或 TEA_FactorCreate(39)', isComposite: false, isStandalone: false },
+        { id: 41, name: 'JMA', tags: ['趋势','波段'], subKey: 'factor_jma_sub', descKey: 'factor_jma_desc', mqh: 'Init("JMA") 或 TEA_FactorCreate(41)', isComposite: false, isStandalone: false },
+        { id: 42, name: 'ADXROC', tags: ['趋势','动量'], subKey: 'factor_adxroc_sub', descKey: 'factor_adxroc_desc', mqh: 'Init("ADXROC") 或 TEA_FactorCreate(42)', isComposite: false, isStandalone: false },
+        { id: 43, name: 'RMI', tags: ['动量','趋势'], subKey: 'factor_rmi_sub', descKey: 'factor_rmi_desc', mqh: 'Init("RMI") 或 TEA_FactorCreate(43)', isComposite: false, isStandalone: false },
+        { id: 44, name: 'Overreaction', tags: ['动量','波动'], subKey: 'factor_overreaction_sub', descKey: 'factor_overreaction_desc', mqh: 'Init("Overreaction") 或 TEA_FactorCreate(44)', isComposite: false, isStandalone: false },
+        { id: 45, name: 'ADLine', tags: ['动量','价差'], subKey: 'factor_adline_sub', descKey: 'factor_adline_desc', mqh: 'Init("ADLine") 或 TEA_FactorCreate(45)', isComposite: false, isStandalone: false },
+        { id: 46, name: 'VWMACD', tags: ['动量','趋势'], subKey: 'factor_vwmacd_sub', descKey: 'factor_vwmacd_desc', mqh: 'Init("VWMACD") 或 TEA_FactorCreate(46)', isComposite: false, isStandalone: false },
+        { id: 47, name: 'NVI', tags: ['动量','趋势'], subKey: 'factor_nvi_sub', descKey: 'factor_nvi_desc', mqh: 'Init("NVI") 或 TEA_FactorCreate(47)', isComposite: false, isStandalone: false },
+        { id: 48, name: 'PVI', tags: ['动量','趋势'], subKey: 'factor_pvi_sub', descKey: 'factor_pvi_desc', mqh: 'Init("PVI") 或 TEA_FactorCreate(48)', isComposite: false, isStandalone: false },
+        { id: 49, name: 'VPT', tags: ['动量','趋势'], subKey: 'factor_vpt_sub', descKey: 'factor_vpt_desc', mqh: 'Init("VPT") 或 TEA_FactorCreate(49)', isComposite: false, isStandalone: false },
+        { id: 50, name: 'EngulfStrength', tags: ['动量','短线'], subKey: 'factor_engulf_strength_sub', descKey: 'factor_engulf_strength_desc', mqh: 'Init("EngulfStrength") 或 TEA_FactorCreate(50)', isComposite: false, isStandalone: false },
+        { id: 51, name: 'PinBar', tags: ['短线','波动'], subKey: 'factor_pinbar_sub', descKey: 'factor_pinbar_desc', mqh: 'Init("PinBar") 或 TEA_FactorCreate(51)', isComposite: false, isStandalone: false },
+        { id: 52, name: 'InsideBar', tags: ['短线','趋势'], subKey: 'factor_insidebar_sub', descKey: 'factor_insidebar_desc', mqh: 'Init("InsideBar") 或 TEA_FactorCreate(52)', isComposite: false, isStandalone: false },
+        { id: 53, name: 'RoundLevel', tags: ['趋势','短线'], subKey: 'factor_roundlevel_sub', descKey: 'factor_roundlevel_desc', mqh: 'Init("RoundLevel") 或 TEA_FactorCreate(53)', isComposite: false, isStandalone: false },
+        { id: 54, name: 'PriceGap', tags: ['波动','动量'], subKey: 'factor_pricegap_sub', descKey: 'factor_pricegap_desc', mqh: 'Init("PriceGap") 或 TEA_FactorCreate(54)', isComposite: false, isStandalone: false },
+        { id: 55, name: 'ConsecutiveBars', tags: ['动量','短线'], subKey: 'factor_consecutivebars_sub', descKey: 'factor_consecutivebars_desc', mqh: 'Init("ConsecutiveBars") 或 TEA_FactorCreate(55)', isComposite: false, isStandalone: false },
+        { id: 56, name: 'LondonMomentum', tags: ['动量','短线'], subKey: 'factor_londonmomentum_sub', descKey: 'factor_londonmomentum_desc', mqh: 'Init("LondonMomentum") 或 TEA_FactorCreate(56)', isComposite: false, isStandalone: false },
+        { id: 57, name: 'NYBreakout', tags: ['趋势','短线'], subKey: 'factor_nybreakout_sub', descKey: 'factor_nybreakout_desc', mqh: 'Init("NYBreakout") 或 TEA_FactorCreate(57)', isComposite: false, isStandalone: false },
+        { id: 58, name: 'AsianRange', tags: ['趋势','短线'], subKey: 'factor_asianrange_sub', descKey: 'factor_asianrange_desc', mqh: 'Init("AsianRange") 或 TEA_FactorCreate(58)', isComposite: false, isStandalone: false },
+        { id: 59, name: 'WeekdayEffect', tags: ['波段','趋势'], subKey: 'factor_weekdayeffect_sub', descKey: 'factor_weekdayeffect_desc', mqh: 'Init("WeekdayEffect") 或 TEA_FactorCreate(59)', isComposite: false, isStandalone: false },
+        { id: 60, name: 'MonthlySeasonality', tags: ['波段','趋势'], subKey: 'factor_monthlyseasonality_sub', descKey: 'factor_monthlyseasonality_desc', mqh: 'Init("MonthlySeasonality") 或 TEA_FactorCreate(60)', isComposite: false, isStandalone: false },
+        { id: 61, name: 'FixPrice', tags: ['短线','趋势'], subKey: 'factor_fixprice_sub', descKey: 'factor_fixprice_desc', mqh: 'Init("FixPrice") 或 TEA_FactorCreate(61)', isComposite: false, isStandalone: false },
+        { id: 69, name: 'PriceEntropy', tags: ['趋势','动量'], subKey: 'factor_priceentropy_sub', descKey: 'factor_priceentropy_desc', mqh: 'Init("PriceEntropy") 或 TEA_FactorCreate(69)', isComposite: false, isStandalone: false },
+        { id: 72, name: 'LZComplexity', tags: ['趋势','动量'], subKey: 'factor_lzcomplexity_sub', descKey: 'factor_lzcomplexity_desc', mqh: 'Init("LZComplexity") 或 TEA_FactorCreate(72)', isComposite: false, isStandalone: false },
+        { id: 73, name: 'PCAFactor', tags: ['趋势','波动'], subKey: 'factor_pcafactor_sub', descKey: 'factor_pcafactor_desc', mqh: 'Init("PCAFactor") 或 TEA_FactorCreate(73)', isComposite: false, isStandalone: false },
+        { id: 74, name: 'AEResidual', tags: ['趋势','波段'], subKey: 'factor_aeresidual_sub', descKey: 'factor_aeresidual_desc', mqh: 'Init("AEResidual") 或 TEA_FactorCreate(74)', isComposite: false, isStandalone: false },
+        { id: 75, name: 'ClusterState', tags: ['趋势','波动'], subKey: 'factor_clusterstate_sub', descKey: 'factor_clusterstate_desc', mqh: 'Init("ClusterState") 或 TEA_FactorCreate(75)', isComposite: false, isStandalone: false },
+        { id: 79, name: 'LargeOrder', tags: ['波动','短线'], subKey: 'factor_largeorder_sub', descKey: 'factor_largeorder_desc', mqh: 'Init("LargeOrder") 或 TEA_FactorCreate(79)', isComposite: false, isStandalone: false },
+        { id: 82, name: 'GARCHVolatility', tags: ['波动'], subKey: 'factor_garchvolatility_sub', descKey: 'factor_garchvolatility_desc', mqh: 'Init("GARCHVolatility") 或 TEA_FactorCreate(82)', isComposite: false, isStandalone: false },
+        { id: 84, name: 'QuantileRegression', tags: ['趋势','R²'], subKey: 'factor_quantileregression_sub', descKey: 'factor_quantileregression_desc', mqh: 'Init("QuantileRegression") 或 TEA_FactorCreate(84)', isComposite: false, isStandalone: false },
+        { id: 85, name: 'TrendFollowCombo', tags: ['组合','趋势','动量'], subKey: 'factor_trendfollowcombo_sub', descKey: 'factor_trendfollowcombo_desc', mqh: 'Init("TrendFollowCombo") 或 TEA_FactorCreate(85)', isComposite: true, isStandalone: false },
+        { id: 86, name: 'MeanReversionCombo', tags: ['组合','趋势','波段'], subKey: 'factor_meanreversioncombo_sub', descKey: 'factor_meanreversioncombo_desc', mqh: 'Init("MeanReversionCombo") 或 TEA_FactorCreate(86)', isComposite: true, isStandalone: false },
+        { id: 87, name: 'BreakoutCombo', tags: ['组合','趋势','短线'], subKey: 'factor_breakoutcombo_sub', descKey: 'factor_breakoutcombo_desc', mqh: 'Init("BreakoutCombo") 或 TEA_FactorCreate(87)', isComposite: true, isStandalone: false },
+        { id: 88, name: 'ArbitrageCombo', tags: ['组合','价差','对冲'], subKey: 'factor_arbitragecombo_sub', descKey: 'factor_arbitragecombo_desc', mqh: 'Init("ArbitrageCombo") 或 TEA_FactorCreate(88)', isComposite: true, isStandalone: false },
+        { id: 89, name: 'MarketMakingCombo', tags: ['组合','波动','对冲'], subKey: 'factor_marketmakingcombo_sub', descKey: 'factor_marketmakingcombo_desc', mqh: 'Init("MarketMakingCombo") 或 TEA_FactorCreate(89)', isComposite: true, isStandalone: false },
+        { id: 90, name: 'TimeframeCombo', tags: ['组合','多周期','趋势'], subKey: 'factor_timeframecombo_sub', descKey: 'factor_timeframecombo_desc', mqh: 'Init("TimeframeCombo") 或 TEA_FactorCreate(90)', isComposite: true, isStandalone: false },
+        { id: 91, name: 'StateCombo', tags: ['组合','波动','动量'], subKey: 'factor_statecombo_sub', descKey: 'factor_statecombo_desc', mqh: 'Init("StateCombo") 或 TEA_FactorCreate(91)', isComposite: true, isStandalone: false },
+        { id: 92, name: 'FusionWeights', tags: ['组合','趋势','动量'], subKey: 'factor_fusionweights_sub', descKey: 'factor_fusionweights_desc', mqh: 'Init("FusionWeights") 或 TEA_FactorCreate(92)', isComposite: true, isStandalone: false },
+        { id: 'standalone', name: 'PairSpreadZ', tags: ['价差','对冲'], subKey: 'factor_pairspread_sub', descKey: 'factor_pairspread_desc', mqh: 'TEA_PairSpreadZ', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'CointegrationSpread', tags: ['价差','对冲'], subKey: 'factor_coint_sub', descKey: 'factor_coint_desc', mqh: 'TEA_CointegrationSpread', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'RangePosition', tags: ['区间','趋势'], subKey: 'factor_rangepos_sub', descKey: 'factor_rangepos_desc', mqh: 'TEA_RangePosition', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'SessionRegime', tags: ['波动'], subKey: 'factor_session_sub', descKey: 'factor_session_desc', mqh: 'TEA_SessionRegime', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'HedgeImbalance', tags: ['减仓','对冲','马丁'], subKey: 'factor_hedgeimb_sub', descKey: 'factor_hedgeimb_desc', mqh: 'TEA_HedgeImbalance', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'ReductionAdvisor', tags: ['减仓','对冲','马丁'], subKey: 'factor_reduction_sub', descKey: 'factor_reduction_desc', mqh: 'TEA_ReductionRecommend', isComposite: false, isStandalone: true },
+        { id: 'standalone', name: 'RSquared', tags: ['趋势','R²'], subKey: 'factor_rsquared_sub', descKey: 'factor_rsquared_desc', mqh: 'TEA_RSquared / TEA_RSquaredEx', isComposite: false, isStandalone: true }
+      ];
 
-      function updateTitleVisibility() {
-        titles.forEach(function (title) {
-          var list = title.nextElementSibling;
-          if (!list || !list.classList.contains('factor-list')) return;
-          var visible = 0;
-          list.querySelectorAll('.factor-card').forEach(function (card) {
-            if (card.style.display !== 'none') visible++;
-          });
-          title.style.display = visible > 0 ? '' : 'none';
-        });
+      function t(key) {
+        var page = 'factors';
+        var lang = window.I18N ? window.I18N.getLang() : 'zh';
+        var obj = window.I18N && window.I18N.LANG && window.I18N.LANG[page] && window.I18N.LANG[page][lang];
+        return (obj && obj[key]) || key;
       }
 
-      btns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var tag = (btn.getAttribute('data-tag') || '').trim();
-          btns.forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          cards.forEach(function (card) {
-            var tags = (card.getAttribute('data-tags') || '');
-            var show = !tag || tags.indexOf(tag) !== -1;
-            card.style.display = show ? '' : 'none';
-          });
-          updateTitleVisibility();
-        });
-      });
+      function replaceTmpl(str, map) {
+        return str.replace(/\{(\w+)\}/g, function (_, k) { return map[k] != null ? map[k] : '{' + k + '}'; });
+      }
 
-      updateTitleVisibility();
+      var TAG_TO_I18N = { '趋势':'tag_trend', '对冲':'tag_hedge', '马丁':'tag_martin', '网格':'tag_grid', '波动':'tag_vol', '短线':'tag_short', '波段':'tag_swing', '减仓':'tag_reduction', '组合':'tag_composite', '动量':'tag_momentum', '多周期':'tag_mtf', '价差':'tag_spread', 'R²':'tag_r2', '中长线':'tag_mid', '区间':'tag_range', '会话':'tag_session' };
+
+      function filterFactors(selectedTag) {
+        if (!selectedTag) return FACTORS;
+        if (selectedTag === '__unified__') return FACTORS.filter(function (f) { return !f.isStandalone; });
+        if (selectedTag === '__standalone__') return FACTORS.filter(function (f) { return f.isStandalone; });
+        return FACTORS.filter(function (f) { return f.tags.indexOf(selectedTag) !== -1; });
+      }
+
+      function renderFactors(filtered, pageNum) {
+        var listEl = document.getElementById('factor-list-handle');
+        var countBar = document.getElementById('factors-count-bar');
+        var paginationWrap = document.getElementById('pagination-wrap');
+        var paginationInfo = document.getElementById('pagination-info');
+        var prevBtn = document.getElementById('pagination-prev');
+        var nextBtn = document.getElementById('pagination-next');
+        if (!listEl) return;
+        var total = filtered.length;
+        var totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+        pageNum = Math.max(1, Math.min(pageNum, totalPages));
+        var start = (pageNum - 1) * PER_PAGE;
+        var slice = filtered.slice(start, start + PER_PAGE);
+        countBar.textContent = replaceTmpl(t('factors_count'), { n: total });
+        listEl.innerHTML = '';
+        slice.forEach(function (f) {
+          var card = document.createElement('article');
+          card.className = 'factor-card' + (f.isComposite ? ' factor-card-composite' : '');
+          card.setAttribute('data-tags', f.tags.join(' '));
+          if (f.isStandalone) card.setAttribute('data-api-type', 'standalone');
+          else card.setAttribute('data-api-type', 'unified');
+          var idBadge = typeof f.id === 'number' ? ('ID ' + f.id) : t('factor_id_standalone');
+          var compositeBadge = f.isComposite ? '<span class="factor-badge-composite">' + t('tag_composite') + '</span>' : '';
+          var tagsHtml = f.tags.slice(0, 5).map(function (tag) {
+            var key = TAG_TO_I18N[tag] || tag;
+            return '<span class="factor-tag">' + t(key) + '</span>';
+          }).join('');
+          card.innerHTML =
+            '<div class="factor-card-head">' +
+              '<strong>' + f.name + '</strong>' +
+              '<span class="factor-id-badge">' + idBadge + '</span>' +
+              compositeBadge +
+              '<span class="factor-name-en">' + (t(f.subKey) || f.subKey) + '</span>' +
+            '</div>' +
+            '<div class="factor-tags">' + tagsHtml + '</div>' +
+            '<p class="factor-card-desc">' + (t(f.descKey) || f.descKey) + '</p>' +
+            '<p class="factor-card-mqh">' + f.mqh + '</p>';
+          listEl.appendChild(card);
+        });
+        paginationWrap.style.display = totalPages > 1 ? '' : 'none';
+        paginationInfo.textContent = replaceTmpl(t('pagination_page'), { n: pageNum }) + ' / ' + replaceTmpl(t('pagination_of'), { total: totalPages });
+        prevBtn.disabled = pageNum <= 1;
+        nextBtn.disabled = pageNum >= totalPages;
+        if (paginationWrap) paginationWrap._currentPage = pageNum;
+      }
+
+      function applyFilterAndRender() {
+        var selectedTag = (document.querySelector('.factor-tag-filter .tag-btn.active') || {}).getAttribute('data-tag') || '';
+        var filtered = filterFactors(selectedTag);
+        var wrap = document.getElementById('pagination-wrap');
+        if (wrap) wrap._currentPage = 1;
+        renderFactors(filtered, 1);
+      }
+
+      (function () {
+        var lang = window.I18N.getLang();
+        window.I18N.applyLang(lang, 'factors');
+        document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+        document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var l = btn.getAttribute('data-lang');
+            window.I18N.setLang(l);
+            window.I18N.applyLang(l, 'factors');
+            document.querySelectorAll('.nav-lang .lang-btn').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            applyFilterAndRender();
+          });
+        });
+      })();
+      (function () {
+        var nav = document.getElementById('main-nav');
+        var toggle = document.getElementById('nav-toggle');
+        if (nav && toggle) toggle.addEventListener('click', function () { nav.classList.toggle('nav-open'); });
+      })();
+      (function () {
+        var btns = document.querySelectorAll('.factor-tag-filter .tag-btn');
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            btns.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            document.getElementById('pagination-wrap')._currentPage = 1;
+            applyFilterAndRender();
+          });
+        });
+      })();
+      (function () {
+        document.getElementById('pagination-prev').addEventListener('click', function () {
+          var selectedTag = (document.querySelector('.factor-tag-filter .tag-btn.active') || {}).getAttribute('data-tag') || '';
+          var filtered = filterFactors(selectedTag);
+          var totalPages = Math.ceil(filtered.length / PER_PAGE);
+          var prevPage = (document.getElementById('pagination-wrap')._currentPage || 1) - 1;
+          if (prevPage < 1) return;
+          document.getElementById('pagination-wrap')._currentPage = prevPage;
+          renderFactors(filtered, prevPage);
+        });
+        document.getElementById('pagination-next').addEventListener('click', function () {
+          var selectedTag = (document.querySelector('.factor-tag-filter .tag-btn.active') || {}).getAttribute('data-tag') || '';
+          var filtered = filterFactors(selectedTag);
+          var totalPages = Math.ceil(filtered.length / PER_PAGE);
+          var nextPage = (document.getElementById('pagination-wrap')._currentPage || 1) + 1;
+          if (nextPage > totalPages) return;
+          document.getElementById('pagination-wrap')._currentPage = nextPage;
+          renderFactors(filtered, nextPage);
+        });
+      })();
+      applyFilterAndRender();
     })();
   </script>
 </body>
