@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-root">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TraderEdgeAIFactor | 专业的量化组合因子引擎</title>
+  <meta name="description" content="一个 DLL 内集成多种因子算法，供 MetaTrader 4 调用。统一接口、标准化输出、多因子汇总。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #fafafa;
+      --text: #202020;
+      --text-muted: #5c5c5c;
+      --green: #4da29e;
+      --green-dark: #3d8582;
+      --gray-pill: #f0f0f0;
+      --gray-border: #e8e8e8;
+      --terminal-bg: #1e1e1e;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max-w: 1100px;
+      --max-w-narrow: 720px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .wrap-narrow {
+      max-width: var(--max-w-narrow);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ----- Nav ----- */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid var(--gray-border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      height: 100%;
+    }
+
+    .nav-logo img {
+      max-height: 28px;
+      width: auto;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .nav-logo:hover img {
+      opacity: 0.85;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a.nav-free {
+      color: var(--text-muted);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .nav-links a.nav-free:hover {
+      color: var(--text);
+    }
+
+    .nav-links a.nav-cta {
+      padding: 0.5rem 1rem;
+      background: var(--green);
+      color: #fff !important;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-links a.nav-cta:hover {
+      background: var(--green-dark);
+      color: #fff !important;
+    }
+
+    .nav-cta .nav-price {
+      font-weight: 500;
+      font-size: 0.8rem;
+      opacity: 0.95;
+    }
+
+    .nav-cta .nav-price s {
+      color: rgba(255, 255, 255, 0.7);
+      margin-right: 0.25rem;
+    }
+
+    /* ----- Hero ----- */
+    .hero {
+      padding: 4.5rem 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(1.8rem, 3.2vw, 2.05rem);
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: -0.03em;
+      margin: 0 0 1rem;
+      color: var(--text);
+    }
+
+    .hero-copy h1 .hl {
+      color: var(--green);
+    }
+
+    .hero-copy h1 .hero-cursor {
+      color: var(--text-muted);
+      font-weight: 400;
+      animation: hero-blink 0.9s step-end infinite;
+    }
+
+    @keyframes hero-blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .hero-copy h1 .hero-rest {
+      color: var(--text);
+    }
+
+    .hero-copy .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin: 0 0 1.75rem;
+      line-height: 1.65;
+    }
+
+    .hero-copy .hero-tagline {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .hero-pain {
+      margin: 0 0 1.5rem;
+    }
+
+    .hero-pain-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1rem;
+    }
+
+    .hero-pain-list li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      background: var(--gray-pill);
+      border: 1px solid var(--gray-border);
+      border-radius: 999px;
+      line-height: 1.4;
+    }
+
+    .hero-pain-list li::before {
+      content: "×";
+      flex-shrink: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      opacity: 0.9;
+      padding-bottom: 3.5px;
+    }
+
+    .hero-pain-solve {
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .hero-pain-solve .highlight {
+      color: var(--green);
+    }
+
+    .hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .hero-btns .btn {
+      min-width: 9.5rem;
+      padding: 0.85rem 1.85rem;
+      font-size: 1rem;
+    }
+
+    .hero-security {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 480px;
+    }
+
+    .hero-security .hero-lock {
+      flex-shrink: 0;
+      font-size: 0.9em;
+      opacity: 0.85;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.9rem;
+      font-family: inherit;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+    }
+
+    .btn-ghost {
+      background: var(--gray-pill);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: #e5e5e5;
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .hero-right .hero-security {
+      margin-top: 0;
+    }
+
+    .hero-terminal {
+      background: var(--terminal-bg);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .term-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.55rem 1rem;
+      background: #2d2d2d;
+      gap: 6px;
+    }
+
+    .term-bar span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .term-bar .r {
+      background: #ff5f56;
+    }
+
+    .term-bar .y {
+      background: #ffbd2e;
+    }
+
+    .term-bar .g {
+      background: #27c93f;
+    }
+
+    .term-body {
+      padding: 1.25rem 1.35rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: #d4d4d4;
+    }
+
+    .term-body .prompt {
+      color: var(--green);
+    }
+
+    .term-body .cmd {
+      color: #9cdcfe;
+    }
+
+    .term-body .term-c {
+      color: #6a9955;
+    }
+
+    .term-body .k {
+      color: #569cd6;
+    }
+
+    .term-body .f {
+      color: #dcdcaa;
+    }
+
+    .term-body .n {
+      color: #b5cea8;
+    }
+
+    .term-body .s {
+      color: #ce9178;
+    }
+
+    .term-body .muted {
+      color: #8b8b8b;
+    }
+
+    /* ----- Section pattern ----- */
+    .sec {
+      padding: 4rem 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .sec.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sec-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .sec-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .sec-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* ----- How it works (3 steps) ----- */
+    .how {
+      background: var(--bg);
+    }
+
+    .how-intro {
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: var(--max-w);
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 1.5rem;
+    }
+
+    .how-flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 0;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .how-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      padding: 1.5rem 0.75rem;
+    }
+
+    .how-step::after {
+      content: '';
+      position: absolute;
+      top: 1.6rem;
+      left: calc(50% + 1.25rem);
+      width: calc(100% - 2.5rem);
+      height: 2px;
+      background: linear-gradient(90deg, var(--gray-border) 0%, var(--gray-border) 100%);
+      z-index: 0;
+    }
+
+    .how-step:last-child::after {
+      display: none;
+    }
+
+    .how-step .num {
+      width: 2.25rem;
+      height: 2.25rem;
+      margin: 0 auto 0.75rem;
+      background: var(--bg);
+      border: 2px solid var(--green);
+      color: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.4rem;
+      color: var(--text);
+    }
+
+    .how-step p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .how-arrow {
+      display: none;
+    }
+
+    /* ----- Features (3 benefits) ----- */
+    .features {
+      background: var(--bg-alt);
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.25rem;
+      max-width: var(--max-w);
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 1.5rem;
+    }
+
+    .feat-card {
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .feat-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--green);
+      opacity: 0.6;
+    }
+
+    .feat-card:hover {
+      border-color: var(--green);
+      box-shadow: 0 6px 24px rgba(77, 162, 158, 0.12);
+    }
+
+    .feat-card:hover::before {
+      opacity: 1;
+    }
+
+    .feat-card .feat-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 1rem;
+      color: var(--green);
+    }
+
+    .feat-card .feat-icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feat-card h3 {
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin: 0 0 0.6rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .feat-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* ----- 产品（DLL 介绍 + 量化因子库）Tab 切换 ----- */
+    .products {
+      background: var(--bg);
+    }
+
+    .product-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0;
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    .product-tab {
+      padding: 0.6rem 1.25rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s, background 0.2s, border-color 0.2s;
+    }
+
+    .product-tab:hover {
+      color: var(--text);
+    }
+
+    .product-tab.active {
+      color: var(--green-dark);
+      background: rgba(77, 162, 158, 0.1);
+      border-color: var(--green);
+    }
+
+    .product-block {
+      display: none;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .product-block.active {
+      display: block;
+    }
+
+    .product-block-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.75rem;
+    }
+
+    .product-dll {
+      padding-bottom: 2rem;
+    }
+
+    .product-factors {
+      padding: 0.75rem 1.5rem 3rem;
+    }
+
+    .factor-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .factor-preview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .factor-preview {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .factor-card {
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .factor-card-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .factor-card-head strong {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .factor-name-en {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .factor-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .factor-tag {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      background: rgba(77, 162, 158, 0.12);
+      color: var(--green-dark);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .factor-card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ----- Bridge 布局（DLL 介绍内复用） ----- */
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .bridge-copy .sec-title .hl {
+      color: var(--green);
+    }
+
+    .bridge-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem;
+    }
+
+    .bridge-list li {
+      padding: 0.35rem 0;
+      padding-left: 1.35rem;
+      position: relative;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .bridge-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+
+    .bridge-link {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .bridge-link:hover {
+      text-decoration: underline;
+    }
+
+    .bridge-link::after {
+      content: ' →';
+    }
+
+    .code-box {
+      background: var(--terminal-bg);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .code-box .term-bar {
+      padding: 0.5rem 1rem;
+    }
+
+    .code-box .term-body {
+      padding: 1rem 1.25rem;
+      font-size: 0.78rem;
+    }
+
+    .code-box .k {
+      color: #569cd6;
+    }
+
+    .code-box .f {
+      color: #dcdcaa;
+    }
+
+    .code-box .n {
+      color: #b5cea8;
+    }
+
+    .code-box .s {
+      color: #ce9178;
+    }
+
+    .code-box .c {
+      color: #6a9955;
+    }
+
+    .code-tab {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: #d4d4d4;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .code-tab:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .code-tab.active {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    /* ----- Pricing ----- */
+    .pricing {
+      background: var(--bg-alt);
+    }
+
+    .pricing .wrap {
+      max-width: var(--max-w-narrow);
+    }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .price-card {
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+
+    .price-card.featured {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px var(--green);
+    }
+
+    .price-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .price-tag .dot {
+      width: 5px;
+      height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+
+    .price-card h3 {
+      font-size: 1.15rem;
+      margin: 0 0 0.25rem;
+      font-weight: 700;
+    }
+
+    .price-card .amount {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0.5rem 0 1rem;
+      color: var(--text);
+    }
+
+    .price-card .amount span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .price-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem;
+    }
+
+    .price-card li {
+      padding: 0.3rem 0;
+      padding-left: 1.25rem;
+      position: relative;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .price-card li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 0.15em;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      margin-top: 7px;
+    }
+
+    .price-card .btn {
+      width: 100%;
+    }
+
+    /* ----- FAQ 左右布局 ----- */
+    .faq {
+      background: var(--bg);
+    }
+
+    .faq .wrap {
+      max-width: var(--max-w);
+    }
+
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .faq-left {
+      position: sticky;
+      top: 72px;
+    }
+
+    .faq-left .faq-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1rem;
+    }
+
+    .faq-left .faq-intro {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+    }
+
+    .faq-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .faq-btn-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--gray-pill);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .faq-btn-contact:hover {
+      background: var(--gray-border);
+      border-color: var(--text-muted);
+    }
+
+    .faq-btn-contact svg {
+      width: 1.1em;
+      height: 1.1em;
+      flex-shrink: 0;
+    }
+
+    .faq-btn-doc {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--gray-pill);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      font-family: inherit;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .faq-btn-doc:hover {
+      background: var(--gray-border);
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+
+    .faq-btn-doc svg {
+      width: 1.1em;
+      height: 1.1em;
+      flex-shrink: 0;
+    }
+
+    .faq-right {
+      min-width: 0;
+    }
+
+    .faq-item {
+      margin-bottom: 0.75rem;
+    }
+
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 1rem 1.25rem;
+      background: #f5f6fa;
+      border: none;
+      border-radius: var(--radius);
+      list-style: none;
+      transition: background 0.2s;
+    }
+
+    .faq-item summary:hover {
+      background: #eef0f5;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::after {
+      content: '+';
+      flex-shrink: 0;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    .faq-item[open] summary::after {
+      content: '−';
+    }
+
+    .faq-item div {
+      padding: 1rem 1.25rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      border: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      background: #f5f6fa;
+      margin-top: -4px;
+      padding-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .faq-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .faq-left {
+        position: static;
+      }
+    }
+
+    /* ----- Footer ----- */
+    footer {
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-border);
+      background: var(--bg);
+    }
+
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--green);
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .footer-security {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--gray-border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      text-align: center;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer-security .footer-lock {
+      flex-shrink: 0;
+      font-size: 0.95em;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 3rem 1rem 4rem;
+      }
+
+      .hero-btns {
+        justify-content: center;
+      }
+
+      .how-flow {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .how-step::after {
+        display: none;
+      }
+
+      .how-step {
+        max-width: 320px;
+      }
+
+      .feat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bridge-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bridge-grid .code-box {
+        order: -1;
+      }
+
+      .factor-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .price-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ----- 语言切换 ----- */
+    .nav-lang {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nav-lang button {
+      padding: 0.35rem 0.6rem;
+      background: transparent;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .nav-lang button:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .nav-lang button.active {
+      color: var(--green);
+      border-color: var(--green);
+      background: rgba(77, 162, 158, 0.08);
+    }
+
+    /* ----- 移动端导航：汉堡菜单 ----- */
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+
+    .nav-toggle:hover {
+      background: var(--gray-pill);
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        flex-wrap: wrap;
+        padding: 0 1rem;
+        padding-bottom: 0;
+        height: auto;
+        min-height: 56px;
+      }
+
+      .nav-links {
+        display: none;
+        order: 10;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 0 1rem;
+        border-top: 1px solid var(--gray-border);
+      }
+
+      .nav.nav-open .nav-links {
+        display: flex;
+      }
+
+      .nav-links a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+        line-height: 1.4;
+        box-sizing: border-box;
+      }
+
+      .nav-links a:hover {
+        background: var(--gray-pill);
+      }
+
+      .nav-toggle {
+        display: flex;
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .nav-lang {
+        margin-left: auto;
+        margin-right: 0.25rem;
+      }
+
+      .nav-lang button {
+        min-height: 36px;
+        min-width: 44px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 0 1rem;
+      }
+
+      .hero {
+        padding: 2rem 1rem 2.5rem;
+      }
+
+      .hero-copy h1 {
+        font-size: 1.5rem;
+      }
+
+      .hero-desc {
+        font-size: 0.95rem;
+      }
+
+      .hero-pain-list {
+        padding-left: 1.25rem;
+      }
+
+      .hero-btns {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+      }
+
+      .hero-btns .btn {
+        width: 100%;
+        min-height: 48px;
+      }
+
+      .hero-terminal {
+        max-width: 100%;
+        overflow: hidden;
+      }
+
+      .term-body {
+        font-size: 0.7rem;
+        padding: 0.75rem 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .hero-security {
+        font-size: 0.75rem;
+      }
+
+      .sec {
+        padding: 2rem 1rem;
+      }
+
+      .sec-title {
+        font-size: 1.35rem;
+      }
+
+      .how-intro,
+      .how-flow {
+        padding: 0 1rem;
+      }
+
+      .how-step {
+        max-width: 100%;
+        padding: 1.25rem 0.5rem;
+      }
+
+      .product-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0 1rem 1rem;
+      }
+
+      .product-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        min-height: 44px;
+      }
+
+      .product-block,
+      .product-dll,
+      .product-factors {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 2rem;
+      }
+
+      .bridge-grid .code-box .term-body {
+        font-size: 0.7rem;
+        padding: 0.75rem 1rem;
+        overflow-x: auto;
+      }
+
+      .price-grid {
+        gap: 1rem;
+      }
+
+      .price-card {
+        padding: 1.25rem 1rem;
+      }
+
+      .faq .wrap {
+        padding: 0 1rem;
+      }
+
+      .faq-layout {
+        gap: 1.5rem;
+      }
+
+      .faq-title {
+        font-size: 1.5rem;
+      }
+
+      .faq-intro {
+        font-size: 0.9rem;
+      }
+
+      .faq-actions {
+        flex-direction: column;
+      }
+
+      .faq-btn-contact,
+      .faq-btn-doc {
+        min-height: 48px;
+        justify-content: center;
+      }
+
+      .faq-item summary {
+        padding: 0.875rem 1rem;
+        min-height: 48px;
+        box-sizing: border-box;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem 1rem;
+        gap: 0.75rem;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .footer-copy {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body data-i18n-page="index">
+
+  <!-- Nav -->
+  <nav class="nav" id="main-nav">
+    <a href="#" class="nav-logo"><img src="logo.png" alt="TraderEdgeAIFactor" /></a>
+    <div class="nav-links">
+      <a href="#how" data-i18n="nav_how">极速上手</a>
+      <a href="#features" data-i18n="nav_features">核心能力</a>
+      <a href="factors.html" data-i18n="nav_factors">算法因子</a>
+      <a href="api.html" data-i18n="nav_api">API 文档</a>
+      <a href="#pricing" data-i18n="nav_pricing">定价</a>
+      <a href="#faq" data-i18n="nav_faq">常见问题</a>
+      <a href="#pricing" class="nav-cta"> <span data-i18n="nav_cta">购买专业版</span> <span class="nav-price"
+          data-i18n="nav_price" data-i18n-html="1"><s>$38/月</s> $30/月</span></a>
+    </div>
+    <div class="nav-lang">
+      <button type="button" class="lang-btn active" data-lang="zh" aria-label="中文">中文</button>
+      <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+    </div>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="菜单"
+      data-i18n-attr="aria-label:nav_toggle_aria">☰</button>
+  </nav>
+
+  <!-- Hero：主标题打字效果 + 竖线光标（参考 ChatShuttle） -->
+  <header class="hero">
+    <div class="hero-copy">
+      <h1>
+        <span id="hero-typed"></span><span class="hero-cursor" id="hero-cursor">|</span>
+      </h1>
+      <p class="hero-desc"><strong class="hero-tagline" data-i18n="hero_tagline">因子难写、接到策略里更难？</strong> <span
+          data-i18n="hero_desc">用一个 DLL 接入，在 MT4/MT5 轻松驾驭多因子量化交易引擎，一次搞定。</span></p>
+      <div class="hero-pain">
+        <ul class="hero-pain-list">
+          <li data-i18n="hero_pain_1">不会因子算法设计？</li>
+          <li data-i18n="hero_pain_2">因子的使用太复杂不会用？</li>
+          <li data-i18n="hero_pain_3">融合到策略不知道如何起步？</li>
+        </ul>
+        <p class="hero-pain-solve" data-i18n="hero_pain_solve">无需思考，接入 TraderEdgeAIFactor 一次搞定！</p>
+      </div>
+      <div class="hero-btns">
+        <a href="releases/v1.0/mql4-include.zip" class="btn btn-primary" download data-i18n="hero_btn_download">马上下载</a>
+        <a href="#how" class="btn btn-ghost" data-i18n="hero_btn_how">极速上手</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-terminal">
+        <div class="term-bar">
+          <span class="r"></span><span class="y"></span><span class="g"></span>
+        </div>
+        <div class="term-body">
+          <span class="term-c" data-i18n="code_hero_c1">// 引入因子库，创建因子实例</span><br>
+          <span class="k">#include</span> <span class="s">&lt;TraderEdgeAIFactor.mqh&gt;</span><br>
+          CTEAFactor factor;<br>
+          <br>
+          <span class="term-c" data-i18n="code_hero_c2">// 初始化：熵场因子，200 根 K 线</span><br>
+          factor.<span class="f">Init</span>(<span class="n">TEA_FACTOR_ENTROPY_HEDGE</span>, <span
+            class="n">200</span>);<br>
+          <span class="term-c" data-i18n="code_hero_c3">// 每 Tick 更新，取方向与动作</span><br>
+          factor.<span class="f">Update</span>();<br>
+          <span class="muted">double dir = factor.<span class="f">Direction</span>();</span> <span class="term-c"
+            data-i18n="code_hero_c4">//
+            -1/0/+1</span><br>
+          <span class="muted">int act = factor.<span class="f">Action</span>();</span> <span class="term-c"
+            data-i18n="code_hero_c5">//
+            FLAT/LONG/SHORT</span>
+        </div>
+      </div>
+      <p class="hero-security">
+        <span class="hero-lock" aria-hidden="true">&#128274;</span>
+        <span data-i18n="hero_security">交易策略存储在您的本地或您自己的服务器上，我们不会获取您的交易策略任何信息，保障绝对的策略安全性。</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- How it works (3 steps) -->
+  <section class="sec how" id="how">
+    <div class="wrap how-intro">
+      <h2 class="sec-title" data-i18n="how_title">快速接入</h2>
+      <p class="sec-desc" data-i18n="how_desc">下载解压 → 放到 MT4/MQ5 对应目录 → EA 里直接调用，终端即可看到分析结果。无需额外服务端。</p>
+    </div>
+    <div class="how-flow">
+      <div class="how-step">
+        <div class="num">1</div>
+        <h3 data-i18n="how_step1_title">下载解压</h3>
+        <p data-i18n="how_step1_p">下载压缩包，解压得到 DLL 与 .mqh 头文件、示例 EA，一步到位。</p>
+      </div>
+      <div class="how-step">
+        <div class="num">2</div>
+        <h3 data-i18n="how_step2_title">放入目录</h3>
+        <p data-i18n="how_step2_p">DLL 放到 MQL4/Libraries（或 MQL5 对应目录），头文件放到 Include，按平台选对路径即可。</p>
+      </div>
+      <div class="how-step">
+        <div class="num">3</div>
+        <h3 data-i18n="how_step3_title">EA 调用</h3>
+        <p data-i18n="how_step3_p">在 EA 里 #include 并 Init 因子，调用 Update() 后即可在终端输出方向、置信度与止损止盈。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features (3 benefits) -->
+  <section class="sec features" id="features">
+    <div class="wrap" style="text-align: center;">
+      <h2 class="sec-title" data-i18n="feat_title">核心能力</h2>
+      <p class="sec-desc" data-i18n="feat_desc">开箱即用、无缝升级、灵活组合，一步到位。</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+          </svg>
+        </div>
+        <h3 data-i18n="feat1_title">开箱即用，多模式适配</h3>
+        <p data-i18n="feat1_p">加载 DLL 与 MQ4/MQ5 的 .mqh 即可使用算法因子库。经典模式零配置、直接调用；资深专家模式可调因子参数、优化信号质量。完整 API 文档支持简单接入与深度对接。
+        </p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9z" />
+            <path d="M15 6l3-3 3 3" />
+            <path d="M9 18l-3 3-3-3" />
+          </svg>
+        </div>
+        <h3 data-i18n="feat2_title">无缝升级，0成本0改动</h3>
+        <p data-i18n="feat2_p">因子库每次升级，您只需替换 DLL，无需改 EA、无需改策略。业务零影响、对接零成本，持续获得新因子与算法优化。</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 17v-6h4v6H3z" />
+            <path d="M10 17V9h4v8h-4z" />
+            <path d="M17 17v-3h4v3h-4z" />
+          </svg>
+        </div>
+        <h3 data-i18n="feat3_title">完善信号，多元组合</h3>
+        <p data-i18n="feat3_p">输出置信度、交易方向、准确度评分、推荐止损止盈等完整信号，支持 Tick 级与长周期。单因子直用、双因子主备权重、多因子投票决策，按需选择。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 产品：DLL 介绍 + 量化因子库（因子市场） -->
+  <section class="sec products" id="products">
+    <div class="wrap" style="text-align: center; margin-bottom: 2rem;">
+      <h2 class="sec-title" data-i18n="products_title">量化引擎和算法因子库</h2>
+      <p class="sec-desc" data-i18n="products_desc">引入 DLL 后，你既获得统一的 API 对接能力，也可在量化因子市场中按策略习惯选用一个或多个因子。</p>
+    </div>
+
+    <div class="product-tabs" role="tablist" aria-label="产品切换">
+      <button type="button" class="product-tab active" role="tab" aria-selected="true" data-product="dll"
+        data-i18n="product_tab_dll">量化引擎</button>
+      <button type="button" class="product-tab" role="tab" aria-selected="false" data-product="factors"
+        data-i18n="product_tab_factors">算法因子库</button>
+    </div>
+
+    <!-- 产品一：DLL 介绍（API 对接） -->
+    <div class="product-block product-dll active" role="tabpanel" id="product-dll">
+      <div class="bridge-grid">
+        <div class="bridge-copy">
+          <h3 class="product-block-title" data-i18n="product_dll_title">量化引擎</h3>
+          <p class="sec-desc" data-i18n="product_dll_desc">TraderEdgeAIFactor 以单个 DLL 提供统一 API，供 MQ4/MQ5 直接调用，通过
+            CTEAFactor 封装，按名称选用单因子或配置多因子组合。</p>
+          <ul class="bridge-list">
+            <li data-i18n="product_dll_api">统一 API 调用，简单直接，和原生技术指标一样，快速敏捷接入，不需要太复杂的知识积累。</li>
+            <li data-i18n="product_dll_out">统一标准输出：基于 DLL API，可以快速获取到封装好的返回，只需要会用即可，不需要深入研究，专注您擅长的策略即可。</li>
+            <li data-i18n="product_dll_multi">多元组合：基于多因子的方式，可以自由组合进行权重调配，让因子动能随着您的设计变得更符合您的预期。</li>
+          </ul>
+          <a href="api.html" class="bridge-link" data-i18n="product_dll_link">查看 API 文档</a>
+        </div>
+        <div class="code-box">
+          <div class="term-bar">
+            <span class="r"></span><span class="y"></span><span class="g"></span>
+            <div class="code-tabs" style="margin-left: auto; display: flex; gap: 0.5rem;">
+              <button type="button" class="code-tab active" data-code="single" data-i18n="code_tab_single">单因子</button>
+              <button type="button" class="code-tab" data-code="multi" data-i18n="code_tab_multi">多因子</button>
+            </div>
+          </div>
+          <div class="term-body code-panel" id="code-panel-single">
+            <span class="k">#include</span> <span class="s">&lt;TraderEdgAIFactor.mqh&gt;</span><br>
+            <br>
+            CTEAFactor factor;<br>
+            factor.<span class="f">Init</span>(<span class="s">"HedgeRegime"</span>, <span class="n">200</span>); <span
+              class="c" data-i18n="code_single_c1">// Init(name, bars)</span><br>
+            factor.<span class="f">Update</span>(); <span class="c" data-i18n="code_single_c2">// 每 Tick 调用</span><br>
+            TEAStandardSignalData sig;<br>
+            factor.<span class="f">Signal</span>(sig); <span class="c" data-i18n="code_single_c3">// Signal(sig) →
+              direction, action, confidence</span><br>
+            <span class="c" data-i18n="code_product_c">// sig.direction, sig.action, sig.confidence</span>
+          </div>
+          <div class="term-body code-panel" id="code-panel-multi" style="display: none;">
+            <span class="k">#include</span> <span class="s">&lt;TraderEdgAIFactor.mqh&gt;</span><br>
+            <br>
+            CTEAFactorSelector sel;<br>
+            sel.<span class="f">Init</span>(<span class="s">"HedgeCore,VolatilityAdjustedMomentum"</span>, <span
+              class="s">"HedgeCore"</span>);<br>
+            <span class="c" data-i18n="code_multi_c1">// 主 70% 子 30%</span><br>
+            TEAStandardSignalData sig;<br>
+            <span class="k">if</span> (sel.<span class="f">Update</span>())<br>
+            &nbsp;&nbsp;sel.<span class="f">GetStandardSignal</span>(sig); <span class="c" data-i18n="code_multi_c2">//
+              加权后的 direction/action</span><br>
+            <span class="c" data-i18n="code_multi_c3">// sig.direction, sig.action, sig.confidence</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 产品二：量化因子库（因子市场） -->
+    <div class="product-block product-factors" role="tabpanel" id="product-factors">
+      <div class="wrap">
+        <h3 class="product-block-title" data-i18n="product_factors_title">算法因子市场</h3>
+        <p class="sec-desc" style="margin-bottom: 1.5rem;" data-i18n="product_factors_desc">引入 DLL 后，你可以在因子市场中查看全部
+          每个因子都带有策略标签（趋势、对冲、马丁、网格等），方便你根据交易习惯选择适合的一个或多个因子接入策略。
+        </p>
+        <div class="factor-preview">
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>EntropyHedge</strong>
+              <span class="factor-name-en" data-i18n="factor_entropy_sub">熵场与对冲矩阵</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_mid">中长线</span>
+              <span class="factor-tag" data-i18n="factor_tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="factor_tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_entropy_desc">基于熵场与分形维的市场状态判断，输出方向、置信度、regime 及建议止损/止盈。</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>TrendPenalty</strong>
+              <span class="factor-name-en" data-i18n="factor_trend_sub">趋势与惩罚</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_grid">网格</span>
+              <span class="factor-tag" data-i18n="factor_tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="factor_tag_high">高频</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_trend_desc">多技术指标与惩罚引擎结合，输出方向、强度、置信度及 0–100 质量分。</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>HedgeRegime</strong>
+              <span class="factor-name-en" data-i18n="factor_hedge_regime_sub">趋势·震荡·刹车</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_hedge">对冲</span>
+              <span class="factor-tag" data-i18n="factor_tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="factor_tag_grid">网格</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_hedge_regime_desc">R² + 布林带突破 + ATR，输出 regime、刹车标志、方向与置信度，与 EA
+              逻辑对齐。</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>TrendStrengthBrake</strong>
+              <span class="factor-name-en" data-i18n="factor_trend_strength_sub">多周期 R²·刹车强度</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="factor_tag_vol">波动率</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_trend_strength_desc">多周期 R² + 波动率阈值 + 自适应带宽刹车强度 0~1，适合精细风控。
+            </p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>ReductionAdvisor</strong>
+              <span class="factor-name-en" data-i18n="factor_reduction_sub">削单建议</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_hedge">对冲</span>
+              <span class="factor-tag" data-i18n="factor_tag_martin">马丁</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_reduction_desc">单侧/跨侧削单推荐，头尾盈利段自动识别，regime 自适应，先平盈利再平亏损。</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-card-head">
+              <strong>RSquared</strong>
+              <span class="factor-name-en" data-i18n="factor_rsquared_sub">趋势强度 R²</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="factor_tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="factor_tag_stable">数值稳定</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_rsquared_desc">Pearson / Theil-Sen 稳健 / 指数加权 R²，DLL
+              计算、数值稳定、抗异常值。</p>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem;">
+          <a href="factors.html" class="bridge-link" data-i18n="product_factors_link">去挑选算法因子</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="sec pricing" id="pricing">
+    <div class="wrap">
+      <h2 class="sec-title" data-i18n="pricing_title">价格表</h2>
+      <p class="sec-desc" data-i18n="pricing_desc">可以立刻下载进行集成测试，先用起来。</p>
+      <div class="price-grid">
+        <div class="price-card">
+          <h3 data-i18n="price_free">免费版</h3>
+          <div class="amount">$0</div>
+          <ul>
+            <li data-i18n="price_free_1">不限制终端数、账号数</li>
+            <li data-i18n="price_free_2">完善的API文档支持</li>
+            <li data-i18n="price_free_3">30天免费试用</li>
+            <li data-i18n="price_free_4">基础的社区支持</li>
+            <li data-i18n="price_free_5">所有免费算法因子畅享</li>
+          </ul>
+          <a href="releases/v1.0/mql4-include.zip" class="btn btn-ghost" download data-i18n="price_btn_free">免费立刻下载</a>
+        </div>
+        <div class="price-card featured">
+          <h3 data-i18n="price_pro">专业版</h3>
+          <div class="amount"><s>$38</s> $30 <span>/ 月</span></div>
+          <ul>
+            <li data-i18n="price_pro_1">专业的人工售后与支持</li>
+            <li data-i18n="price_pro_2">人工协助 API 集成，专业参数配置建议</li>
+            <li data-i18n="price_pro_3">所有非定制算法因子均可使用</li>
+            <li data-i18n="price_pro_4">年付赠送 2 个月</li>
+            <li data-i18n="price_pro_5">基于因子定制开发EA任务，另计费</li>
+          </ul>
+          <a href="mailto:pro@traderedgai.com?subject=TraderEdgAI%20Pro%20订阅" class="btn btn-primary"
+            data-i18n="price_btn_pro">联系购买</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ 左右布局 -->
+  <section class="sec faq" id="faq">
+    <div class="wrap">
+      <div class="faq-layout">
+        <div class="faq-left">
+          <h2 class="faq-title" data-i18n="faq_title">常见问题</h2>
+          <p class="faq-intro" data-i18n="faq_intro">没找到想要的答案？您还可以通过以下方式联系我们，或查看产品使用帮助文档。</p>
+          <div class="faq-actions">
+            <a href="mailto:support@traderedgai.com?subject=TraderEdgeAIFactor%20咨询" class="faq-btn-contact">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              <span data-i18n="faq_contact">联系我们</span>
+            </a>
+            <a href="api.html" class="faq-btn-doc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              <span data-i18n="faq_doc">帮助文档</span>
+            </a>
+          </div>
+        </div>
+        <div class="faq-right">
+          <details class="faq-item">
+            <summary data-i18n="faq_q1">免费版可以使用哪些因子？</summary>
+            <div data-i18n="faq_a1">免费版开放部分因子库，提供 30 天试用期。需自行阅读文档完成 API 集成，需求与问题可通过 GitHub ISSUE 提交。</div>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq_q2">专业版与免费版的主要区别？</summary>
+            <div data-i18n="faq_a2">专业版提供完整因子库、无期限授权、专属人工对接与 API 集成支持、BUG 当日修复。年付可享赠送 2 个月。</div>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq_q3">DLL 是否支持 64 位 MT4？</summary>
+            <div data-i18n="faq_a3">当前发布版本为 Windows 32 位，适配 MetaTrader 4。MT5 或 64 位环境需单独构建或联系专业版获取适配版本。</div>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq_q4">如何参与多因子汇总？</summary>
+            <div data-i18n="faq_a4">使用 CTEAFactorSelector::Init(factorNames,
+              mainFactorName)。单因子：<code>Init("HedgeRegime")</code>。双因子主备：<code>Init("HedgeCore,VolatilityAdjustedMomentum", "HedgeCore")</code>，第二个参数为主因子名（70%
+              权重）。3–8 因子投票：<code>Init("HedgeCore,VolatilityAdjustedMomentum,AdaptiveTrendIntensity")</code>，按 accuracy
+              加权。因子与组合因子可混用。</div>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq_q5">因子和因子组合有什么区别？</summary>
+            <div data-i18n="faq_a5" data-i18n-html="1">组合因子（如 HedgeCore）内部由多个原子因子组成，但对 API 而言与原子因子一样，都有统一 ID
+              和标准输出。可以单独用，也可以和任何原子因子、其他组合因子一起参与多因子组合，例如 <code>Init("HedgeCore,VolatilityAdjustedMomentum")</code>。</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="#">TraderEdgeAIFactor</a>
+        <a href="releases/v1.0/mql4-include.zip" download data-i18n="footer_download">下载</a>
+        <a href="#how" data-i18n="footer_how">极速上手</a>
+        <a href="api.html" data-i18n="footer_api">API 文档</a>
+        <a href="#pricing" data-i18n="footer_pricing">定价</a>
+        <a href="#faq" data-i18n="footer_faq">常见问题</a>
+      </div>
+      <p class="footer-copy" data-i18n="footer_copy">© TraderEdgeAI.com 使用前请阅读授权与免责声明。</p>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    // 语言切换：应用当前语言并绑定切换按钮
+    (function () {
+      var lang = window.I18N.getLang();
+      window.I18N.applyLang(lang, 'index');
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var l = btn.getAttribute('data-lang');
+          window.I18N.setLang(l);
+          window.I18N.applyLang(l, 'index');
+          document.querySelectorAll('.nav-lang .lang-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          if (window.restartHeroTyping) window.restartHeroTyping();
+        });
+      });
+    })();
+
+    // 主标题打字效果（按当前语言取文案）
+    (function () {
+      function getTitleText() {
+        return (window.I18N && window.I18N.LANG && window.I18N.LANG.index && window.I18N.LANG.index[window.I18N.getLang()])
+          ? window.I18N.LANG.index[window.I18N.getLang()].hero_typed
+          : 'TraderEdgeAIFactor量化引擎';
+      }
+      var titleText = getTitleText();
+      var el = document.getElementById('hero-typed');
+      var cur = document.getElementById('hero-cursor');
+      if (!el) return;
+      var i = 0;
+      var speed = 90;
+      function type() {
+        if (i < titleText.length) {
+          el.textContent += titleText.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          setTimeout(restart, 2800);
+        }
+      }
+      function restart() {
+        el.textContent = '';
+        i = 0;
+        titleText = getTitleText();
+        setTimeout(type, 500);
+      }
+      window.restartHeroTyping = function () {
+        el.textContent = '';
+        i = 0;
+        titleText = getTitleText();
+        setTimeout(type, 400);
+      };
+      setTimeout(type, 400);
+    })();
+
+    (function () {
+      var sections = document.querySelectorAll('.sec');
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+      sections.forEach(function (s) { obs.observe(s); });
+    })();
+
+    // 量化引擎代码区：单因子 / 多因子 TAB 切换
+    (function () {
+      var codeBox = document.querySelector('.product-dll .code-box');
+      if (!codeBox) return;
+      var tabs = codeBox.querySelectorAll('.code-tab');
+      var panels = codeBox.querySelectorAll('.code-panel');
+      tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-code');
+          tabs.forEach(function (t) { t.classList.remove('active'); });
+          btn.classList.add('active');
+          panels.forEach(function (p) {
+            p.style.display = (p.id === 'code-panel-' + id) ? 'block' : 'none';
+          });
+        });
+      });
+    })();
+
+    // 产品区 Tab 切换（DLL 介绍 / 量化因子库）；切到因子库时重新应用当前语言，确保英文下卡片文案正确
+    (function () {
+      var tabs = document.querySelectorAll('.product-tabs .product-tab');
+      var panels = document.querySelectorAll('.products .product-block');
+      if (!tabs.length || !panels.length) return;
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var id = tab.getAttribute('data-product');
+          tabs.forEach(function (t) {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+          panels.forEach(function (p) {
+            var show = (id === 'dll' && p.classList.contains('product-dll')) || (id === 'factors' && p.classList.contains('product-factors'));
+            p.classList.toggle('active', show);
+          });
+          if (id === 'factors' && window.I18N) window.I18N.applyLang(window.I18N.getLang(), 'index');
+        });
+      });
+    })();
+
+    // 移动端：汉堡菜单切换
+    (function () {
+      var nav = document.getElementById('main-nav');
+      var toggle = document.getElementById('nav-toggle');
+      if (!nav || !toggle) return;
+      toggle.addEventListener('click', function () {
+        nav.classList.toggle('nav-open');
+      });
+    })();
+  </script>
+</body>
+
+</html>

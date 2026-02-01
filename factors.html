@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>算法因子市场 | TraderEdgeAIFactor</title>
+  <meta name="description" content="引入 DLL 后可选用的算法因子库，每个因子带策略标签（高频、长线、货币对冲、马丁、网格等），方便根据交易习惯选择。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #fafafa;
+      --text: #202020;
+      --text-muted: #5c5c5c;
+      --green: #4da29e;
+      --green-dark: #3d8582;
+      --gray-pill: #f0f0f0;
+      --gray-border: #e8e8e8;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max-w: 1100px;
+      --max-w-narrow: 720px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .wrap-narrow {
+      max-width: var(--max-w-narrow);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid var(--gray-border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      height: 100%;
+    }
+
+    .nav-logo img {
+      max-height: 28px;
+      width: auto;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a.nav-here {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .nav-links a.nav-cta {
+      padding: 0.5rem 1rem;
+      background: var(--green);
+      color: #fff !important;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-links a.nav-cta:hover {
+      background: var(--green-dark);
+      color: #fff !important;
+    }
+
+    .nav-cta .nav-price {
+      font-weight: 500;
+      font-size: 0.8rem;
+      opacity: 0.95;
+    }
+
+    .nav-cta .nav-price s {
+      color: rgba(255, 255, 255, 0.7);
+      margin-right: 0.25rem;
+    }
+
+    .nav-lang {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nav-lang button {
+      padding: 0.35rem 0.6rem;
+      background: transparent;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .nav-lang button:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .page-hero {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .page-hero h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: var(--text);
+    }
+
+    .page-hero p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin: 0;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .factors-sec {
+      padding: 0 1.5rem 4rem;
+      max-width: 1410px;
+      margin: 0 auto;
+    }
+
+    .factors-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .factors-sidebar {
+      position: sticky;
+      top: 72px;
+      padding: 1rem 0;
+      border-right: 1px solid var(--gray-border);
+    }
+
+    .factors-sidebar-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 0 0 0.75rem;
+      padding: 0 0.5rem;
+    }
+
+    .factor-tag-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .factor-tag-filter .tag-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .factor-tag-filter .tag-btn:hover {
+      background: var(--gray-pill);
+      color: var(--text);
+    }
+
+    .factor-tag-filter .tag-btn.active {
+      background: rgba(77, 162, 158, 0.12);
+      color: var(--green-dark);
+    }
+
+    .filter-group-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin: 0.75rem 0.5rem 0.35rem;
+      opacity: 0.85;
+    }
+
+    .filter-group-label:first-of-type {
+      margin-top: 0.25rem;
+    }
+
+    .factors-main {
+      min-width: 0;
+    }
+
+    .factors-intro {
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .factor-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .factor-card {
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 0;
+    }
+
+    .factor-card:hover {
+      border-color: var(--green);
+      box-shadow: 0 6px 20px rgba(77, 162, 158, 0.1);
+    }
+
+    .factor-card-head {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .factor-card-head strong {
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      word-break: break-word;
+    }
+
+    .factor-id-badge {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.5rem;
+      background: var(--gray-pill);
+      color: var(--text-muted);
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .factor-name-en {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      width: 100%;
+    }
+
+    .factor-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .factor-tag {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: rgba(77, 162, 158, 0.12);
+      color: var(--green-dark);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .factor-card-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .factor-card-mqh {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--gray-border);
+    }
+
+    .factors-group-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 1.5rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .factors-group-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .factor-badge-composite {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      background: var(--green);
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .factor-card-composite {
+      border-left: 3px solid var(--green);
+    }
+
+    .back-cta {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-border);
+    }
+
+    .back-cta a {
+      color: var(--green);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .back-cta a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-border);
+      background: var(--bg);
+    }
+
+    .footer-inner {
+      max-width: 1410px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--green);
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .factor-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .factors-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .factors-sidebar {
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--gray-border);
+        padding-bottom: 1rem;
+      }
+
+      .factor-tag-filter {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .factor-tag-filter .tag-btn {
+        width: auto;
+      }
+
+      .filter-group-label {
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .filter-group-label:first-of-type {
+        margin-top: 0.5rem;
+      }
+
+      .factor-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .nav-lang button.active {
+      color: var(--green);
+      border-color: var(--green);
+      background: rgba(77, 162, 158, 0.08);
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+
+    .nav-toggle:hover {
+      background: var(--gray-pill);
+    }
+
+    @media (max-width: 900px) {
+      .nav {
+        flex-wrap: wrap;
+        padding: 0 1rem;
+        padding-bottom: 0;
+        height: auto;
+        min-height: 56px;
+      }
+
+      .nav-links {
+        display: none;
+        order: 10;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 0 1rem;
+        border-top: 1px solid var(--gray-border);
+      }
+
+      .nav.nav-open .nav-links {
+        display: flex;
+      }
+
+      .nav-links a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+        box-sizing: border-box;
+      }
+
+      .nav-links a:hover {
+        background: var(--gray-pill);
+      }
+
+      .nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .nav-lang {
+        margin-left: auto;
+        margin-right: 0.25rem;
+      }
+
+      .nav-lang button {
+        min-height: 36px;
+        min-width: 44px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 0 1rem;
+      }
+
+      .factors-sec {
+        padding: 0 1rem 2rem;
+      }
+
+      .page-hero {
+        padding: 2rem 1rem;
+      }
+
+      .page-hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .factor-tag-filter .tag-btn {
+        min-height: 44px;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .factor-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body data-i18n-page="factors">
+
+  <nav class="nav" id="main-nav">
+    <a href="index.html" class="nav-logo"><img src="logo.png" alt="TraderEdgeAIFactor" /></a>
+    <div class="nav-links">
+      <a href="index.html#how" data-i18n="nav_how">极速上手</a>
+      <a href="index.html#features" data-i18n="nav_features">核心能力</a>
+      <a href="factors.html" class="nav-here" data-i18n="nav_factors">算法因子</a>
+      <a href="api.html" data-i18n="nav_api">API 文档</a>
+      <a href="index.html#pricing" data-i18n="nav_pricing">定价</a>
+      <a href="index.html#faq" data-i18n="nav_faq">常见问题</a>
+      <a href="index.html#pricing" class="nav-cta"><span data-i18n="nav_cta">购买专业版</span> <span class="nav-price"
+          data-i18n="nav_price" data-i18n-html="1"><s>$38/月</s> $30/月</span></a>
+    </div>
+    <div class="nav-lang">
+      <button type="button" class="lang-btn active" data-lang="zh" aria-label="中文">中文</button>
+      <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+    </div>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="菜单" data-i18n-attr="aria-label:nav_toggle_aria">☰</button>
+  </nav>
+
+  <header class="page-hero">
+    <h1 data-i18n="page_title">算法因子市场</h1>
+    <p data-i18n="page_desc">按交易场景筛选，快速找到适合你策略的算法因子。</p>
+  </header>
+
+  <section class="factors-sec">
+    <div class="factors-layout">
+      <aside class="factors-sidebar" role="navigation" aria-label="按策略标签筛选" data-i18n-attr="aria-label:sidebar_aria">
+        <h2 class="factors-sidebar-title" data-i18n="sidebar_title">按场景筛选</h2>
+        <div class="factor-tag-filter" role="group" aria-label="按策略标签筛选" data-i18n-attr="aria-label:sidebar_aria">
+          <button type="button" class="tag-btn active" data-tag="" data-i18n="tag_all">全部</button>
+          <span class="filter-group-label" data-i18n="filter_group_style">交易风格</span>
+          <button type="button" class="tag-btn" data-tag="趋势" data-i18n="tag_trend">趋势</button>
+          <button type="button" class="tag-btn" data-tag="对冲" data-i18n="tag_hedge">对冲</button>
+          <button type="button" class="tag-btn" data-tag="网格" data-i18n="tag_grid">网格</button>
+          <button type="button" class="tag-btn" data-tag="马丁" data-i18n="tag_martin">马丁</button>
+          <button type="button" class="tag-btn" data-tag="短线" data-i18n="tag_short">短线</button>
+          <button type="button" class="tag-btn" data-tag="波段" data-i18n="tag_swing">波段</button>
+          <span class="filter-group-label" data-i18n="filter_group_signal">信号类型</span>
+          <button type="button" class="tag-btn" data-tag="波动" data-i18n="tag_vol">波动</button>
+          <button type="button" class="tag-btn" data-tag="减仓" data-i18n="tag_reduction">减仓</button>
+          <button type="button" class="tag-btn" data-tag="组合" data-i18n="tag_composite">组合</button>
+        </div>
+      </aside>
+
+      <main class="factors-main">
+        <h3 class="factors-group-title" data-i18n="factors_group_all">所有算法因子和组合</h3>
+        <div class="factor-list" id="factor-list-handle">
+          <article class="factor-card" data-tags="中长线 波段 趋势 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>EntropyHedge</strong>
+              <span class="factor-id-badge">ID 0</span>
+              <span class="factor-name-en" data-i18n="factor_entropy_sub">熵场与对冲矩阵</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_mid">中长线</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_entropy_desc">基于熵场与分形维的市场状态判断，输出方向、置信度、regime 及建议止损/止盈。</p>
+            <p class="factor-card-mqh">Init("EntropyHedge") 或 TEA_FactorCreate(0)</p>
+          </article>
+          <article class="factor-card" data-tags="网格 马丁 高频 短线">
+            <div class="factor-card-head">
+              <strong>TrendPenalty</strong>
+              <span class="factor-id-badge">ID 1</span>
+              <span class="factor-name-en" data-i18n="factor_trend_sub">趋势与惩罚</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_grid">网格</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="tag_high">高频</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_trend_desc">多技术指标与惩罚引擎结合，输出方向、强度、置信度及 0–100 质量分。</p>
+            <p class="factor-card-mqh">Init("TrendPenalty") 或 TEA_FactorCreate(1)</p>
+          </article>
+          <article class="factor-card" data-tags="趋势 货币对冲 对冲 马丁 网格">
+            <div class="factor-card-head">
+              <strong>HedgeRegime</strong>
+              <span class="factor-id-badge">ID 2</span>
+              <span class="factor-name-en" data-i18n="factor_hedge_regime_sub">趋势·震荡·刹车</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="tag_grid">网格</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_hedge_regime_desc">R² + 布林带突破 + ATR，输出 regime、刹车、方向与置信度。扩展：TEA_FactorGetBrake、TEA_FactorGetATR。</p>
+            <p class="factor-card-mqh">Init("HedgeRegime") 或 TEA_FactorCreate(2)</p>
+          </article>
+          <article class="factor-card" data-tags="趋势 R² 波段">
+            <div class="factor-card-head">
+              <strong>TrendStrengthBrake</strong>
+              <span class="factor-id-badge">ID 3</span>
+              <span class="factor-name-en" data-i18n="factor_trend_strength_sub">多周期 R²·刹车强度</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_r2">R²</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_trend_strength_desc">多周期 R² + 波动率阈值 + 刹车强度 0~1。扩展：TEA_FactorGetBrakeStrength。</p>
+            <p class="factor-card-mqh">Init("TrendStrengthBrake") 或 TEA_FactorCreate(3)</p>
+          </article>
+          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>VolatilitySpike</strong>
+              <span class="factor-id-badge">ID 4</span>
+              <span class="factor-name-en" data-i18n="factor_volspike_sub">波动率尖峰</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_volspike_desc">检测波动率尖峰，输出 spike_ratio。扩展：TEA_FactorGetVolatilitySpikeRatio。</p>
+            <p class="factor-card-mqh">Init("VolatilitySpike") 或 TEA_FactorCreate(4)</p>
+          </article>
+          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>JumpDetector</strong>
+              <span class="factor-id-badge">ID 5</span>
+              <span class="factor-name-en" data-i18n="factor_jump_sub">跳空/闪崩检测</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_jump_desc">检测跳空与闪崩，输出 jump_score、is_jump。扩展：TEA_FactorGetJumpScore、TEA_FactorGetIsJump。</p>
+            <p class="factor-card-mqh">Init("JumpDetector") 或 TEA_FactorCreate(5)</p>
+          </article>
+          <article class="factor-card" data-tags="多周期 趋势 波段">
+            <div class="factor-card-head">
+              <strong>MultiTFAlign</strong>
+              <span class="factor-id-badge">ID 6</span>
+              <span class="factor-name-en" data-i18n="factor_mtfalign_sub">多周期对齐</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_mtf">多周期</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_mtfalign_desc">多时间框架动量对齐，判断多周期是否共振。</p>
+            <p class="factor-card-mqh">Init("MultiTFAlign") 或 TEA_FactorCreate(6)</p>
+          </article>
+          <article class="factor-card" data-tags="趋势 R² 波段">
+            <div class="factor-card-head">
+              <strong>HurstRegime</strong>
+              <span class="factor-id-badge">ID 7</span>
+              <span class="factor-name-en" data-i18n="factor_hurst_sub">Hurst 指数 regime</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_r2">R²</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_hurst_desc">Hurst 指数判断趋势/均值回归 regime。扩展：TEA_FactorGetHurst。</p>
+            <p class="factor-card-mqh">Init("HurstRegime") 或 TEA_FactorCreate(7)</p>
+          </article>
+          <article class="factor-card factor-card-composite" data-tags="组合 趋势 货币对冲 对冲 马丁 网格">
+            <div class="factor-card-head">
+              <strong>HedgeCore</strong>
+              <span class="factor-id-badge">ID 8</span>
+              <span class="factor-badge-composite" data-i18n="tag_composite">组合</span>
+              <span class="factor-name-en" data-i18n="factor_hedgecore_sub">XAUUSD 对冲一体化</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_composite">组合</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="tag_grid">网格</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_hedgecore_desc">内部整合 HedgeRegime + VolatilitySpike + JumpDetector，输出 regime、刹车、ATR、StepScale、VolRegime。</p>
+            <p class="factor-card-mqh">Init("HedgeCore") 或 TEA_FactorCreate(8)</p>
+          </article>
+          <article class="factor-card" data-tags="货币对冲 对冲 马丁 网格">
+            <div class="factor-card-head">
+              <strong>StepScale</strong>
+              <span class="factor-id-badge">ID 9</span>
+              <span class="factor-name-en" data-i18n="factor_stepscale_sub">步长缩放</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+              <span class="factor-tag" data-i18n="tag_grid">网格</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_stepscale_desc">根据波动率输出步长缩放系数 0.5~1.5。扩展：TEA_FactorGetStepScale。</p>
+            <p class="factor-card-mqh">Init("StepScale") 或 TEA_FactorCreate(9)</p>
+          </article>
+          <article class="factor-card" data-tags="动量 趋势 波段">
+            <div class="factor-card-head">
+              <strong>MomentumExhaustion</strong>
+              <span class="factor-id-badge">ID 10</span>
+              <span class="factor-name-en" data-i18n="factor_momentum_exhaust_sub">动量衰竭</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_momentum_exhaust_desc">动量衰竭检测。扩展：TEA_FactorGetExhaustionScore。</p>
+            <p class="factor-card-mqh">Init("MomentumExhaustion") 或 TEA_FactorCreate(10)</p>
+          </article>
+          <article class="factor-card" data-tags="波动率 波动 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>VolatilityRegime</strong>
+              <span class="factor-id-badge">ID 11</span>
+              <span class="factor-name-en" data-i18n="factor_volregime_sub">波动率状态</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_volregime_desc">波动率分级 regime + 缩放系数。扩展：TEA_FactorGetVolRegime、TEA_FactorGetVolScale。</p>
+            <p class="factor-card-mqh">Init("VolatilityRegime") 或 TEA_FactorCreate(11)</p>
+          </article>
+          <article class="factor-card" data-tags="动量 跳空 波动">
+            <div class="factor-card-head">
+              <strong>GapFillScore</strong>
+              <span class="factor-id-badge">ID 12</span>
+              <span class="factor-name-en" data-i18n="factor_gapfill_sub">跳空回补得分</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
+              <span class="factor-tag" data-i18n="tag_gap">跳空</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_gapfill_desc">跳空回补概率得分。扩展：TEA_FactorGetGapFillScore、TEA_FactorGetHasGap。</p>
+            <p class="factor-card-mqh">Init("GapFillScore") 或 TEA_FactorCreate(12)</p>
+          </article>
+          <article class="factor-card" data-tags="趋势 货币对冲 对冲 马丁">
+            <div class="factor-card-head">
+              <strong>AsymmetricBrake</strong>
+              <span class="factor-id-badge">ID 13</span>
+              <span class="factor-name-en" data-i18n="factor_asymbrake_sub">多空独立刹车</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_asymbrake_desc">多空侧独立刹车标志。扩展：TEA_FactorGetBrakeBuy、TEA_FactorGetBrakeSell。</p>
+            <p class="factor-card-mqh">Init("AsymmetricBrake") 或 TEA_FactorCreate(13)</p>
+          </article>
+          <article class="factor-card" data-tags="动量 波动率 波动">
+            <div class="factor-card-head">
+              <strong>VolatilityAdjustedMomentum</strong>
+              <span class="factor-id-badge">ID 14</span>
+              <span class="factor-name-en" data-i18n="factor_vam_sub">波动率调整动量</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
+              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_vam_desc">VAM = 价格变化/即时波动率，动态阈值。扩展：TEA_FactorGetVAM、TEA_FactorGetVAMThreshold。</p>
+            <p class="factor-card-mqh">Init("VolatilityAdjustedMomentum") 或 TEA_FactorCreate(14)</p>
+          </article>
+          <article class="factor-card" data-tags="动量 趋势 波段">
+            <div class="factor-card-head">
+              <strong>AdaptiveTrendIntensity</strong>
+              <span class="factor-id-badge">ID 15</span>
+              <span class="factor-name-en" data-i18n="factor_ati_sub">自适应趋势强度</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_momentum">动量</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_ati_desc">ER + AMA + 趋势强度。扩展：TEA_FactorGetER、TEA_FactorGetTrendIntensity。</p>
+            <p class="factor-card-mqh">Init("AdaptiveTrendIntensity") 或 TEA_FactorCreate(15)</p>
+          </article>
+          <article class="factor-card" data-tags="多周期 趋势 波段">
+            <div class="factor-card-head">
+              <strong>MultiTimeframeResonance</strong>
+              <span class="factor-id-badge">ID 16</span>
+              <span class="factor-name-en" data-i18n="factor_mtr_sub">多周期共振</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_mtf">多周期</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_mtr_desc">多档 EMA 动量对齐，输出 alignment、resonance。扩展：TEA_FactorGetAlignment、TEA_FactorGetResonance。</p>
+            <p class="factor-card-mqh">Init("MultiTimeframeResonance") 或 TEA_FactorCreate(16)</p>
+          </article>
+        </div>
+
+        <h3 class="factors-group-title" data-i18n="factors_group_special">特殊算法因子</h3>
+        <div class="factor-list" id="factor-list-standalone">
+          <article class="factor-card" data-tags="价差 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>PairSpreadZ</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_pairspread_sub">价差 Z 分数</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_spread">价差</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_pairspread_desc">双品种价差 Z 分数，固定对冲比率。TEA_PairSpreadZ(closes_a, closes_b, count, hedge_ratio)</p>
+            <p class="factor-card-mqh">TEA_PairSpreadZ</p>
+          </article>
+          <article class="factor-card" data-tags="价差 货币对冲 对冲">
+            <div class="factor-card-head">
+              <strong>CointegrationSpread</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_coint_sub">协整价差 (Kalman)</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_spread">价差</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_coint_desc">金银等协整价差，Kalman 滤波动态对冲比，输出 beta、spread、zscore、signal。TEA_CointegrationSpread</p>
+            <p class="factor-card-mqh">TEA_CointegrationSpread</p>
+          </article>
+          <article class="factor-card" data-tags="区间 趋势 波动">
+            <div class="factor-card-head">
+              <strong>RangePosition</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_rangepos_sub">区间位置</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_range">区间</span>
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_rangepos_desc">当前价格在近期高低区间的相对位置 0~1。TEA_RangePosition</p>
+            <p class="factor-card-mqh">TEA_RangePosition</p>
+          </article>
+          <article class="factor-card" data-tags="会话 波动率 波动">
+            <div class="factor-card-head">
+              <strong>SessionRegime</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_session_sub">会话 regime</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_session">会话</span>
+              <span class="factor-tag" data-i18n="tag_vol">波动率</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_session_desc">按小时/分钟返回会话 regime 与波动率缩放。TEA_SessionRegime</p>
+            <p class="factor-card-mqh">TEA_SessionRegime</p>
+          </article>
+          <article class="factor-card" data-tags="削单 减仓 货币对冲 对冲 马丁">
+            <div class="factor-card-head">
+              <strong>HedgeImbalance</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_hedgeimb_sub">对冲失衡</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_reduction">削单</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_hedgeimb_desc">多空盈亏失衡时输出刹车建议。TEA_HedgeImbalance</p>
+            <p class="factor-card-mqh">TEA_HedgeImbalance</p>
+          </article>
+          <article class="factor-card" data-tags="削单 减仓 货币对冲 对冲 马丁">
+            <div class="factor-card-head">
+              <strong>ReductionAdvisor</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_reduction_sub">削单建议</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_reduction">削单</span>
+              <span class="factor-tag" data-i18n="tag_hedge">货币对冲</span>
+              <span class="factor-tag" data-i18n="tag_martin">马丁</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_reduction_desc">单侧/跨侧削单推荐，头尾盈利段自动识别，regime 自适应。</p>
+            <p class="factor-card-mqh" data-i18n="factor_standalone_reduction">TEA_ReductionRecommend</p>
+          </article>
+          <article class="factor-card" data-tags="趋势 R² 波段">
+            <div class="factor-card-head">
+              <strong>RSquared</strong>
+              <span class="factor-id-badge" data-i18n="factor_id_standalone">独立 API</span>
+              <span class="factor-name-en" data-i18n="factor_rsquared_sub">趋势强度 R²</span>
+            </div>
+            <div class="factor-tags">
+              <span class="factor-tag" data-i18n="tag_trend">趋势</span>
+              <span class="factor-tag" data-i18n="tag_r2">R²</span>
+            </div>
+            <p class="factor-card-desc" data-i18n="factor_rsquared_desc">Pearson / Theil-Sen / 指数加权 R²，返回 0~1 趋势强度。</p>
+            <p class="factor-card-mqh" data-i18n="factor_standalone_rsquared">TEA_RSquared / TEA_RSquaredEx</p>
+          </article>
+        </div>
+
+        <div class="back-cta">
+          <a href="api.html#quick" data-i18n="api_quick_start">API 快速接入</a>
+          <span style="color: var(--gray-border); margin: 0 0.5rem;">|</span>
+          <a href="index.html#products" data-i18n="back">← 返回产品介绍</a>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="index.html">TraderEdgeAIFactor</a>
+        <a href="releases/v1.0/mql4-include.zip" download data-i18n="footer_download">下载</a>
+        <a href="index.html#how" data-i18n="footer_how">极速上手</a>
+        <a href="api.html" data-i18n="footer_api">API 文档</a>
+        <a href="index.html#pricing" data-i18n="footer_pricing">定价</a>
+        <a href="index.html#faq" data-i18n="footer_faq">常见问题</a>
+      </div>
+      <p class="footer-copy" data-i18n="footer_copy">© TraderEdgeAI.com 使用前请阅读授权与免责声明。</p>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    (function () {
+      var lang = window.I18N.getLang();
+      window.I18N.applyLang(lang, 'factors');
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var l = btn.getAttribute('data-lang');
+          window.I18N.setLang(l);
+          window.I18N.applyLang(l, 'factors');
+          document.querySelectorAll('.nav-lang .lang-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+    })();
+    (function () {
+      var nav = document.getElementById('main-nav');
+      var toggle = document.getElementById('nav-toggle');
+      if (nav && toggle) toggle.addEventListener('click', function () { nav.classList.toggle('nav-open'); });
+    })();
+    (function () {
+      var cards = document.querySelectorAll('.factor-card');
+      var btns = document.querySelectorAll('.factor-tag-filter .tag-btn');
+      var titles = document.querySelectorAll('.factors-group-title');
+
+      function updateTitleVisibility() {
+        titles.forEach(function (title) {
+          var list = title.nextElementSibling;
+          if (!list || !list.classList.contains('factor-list')) return;
+          var visible = 0;
+          list.querySelectorAll('.factor-card').forEach(function (card) {
+            if (card.style.display !== 'none') visible++;
+          });
+          title.style.display = visible > 0 ? '' : 'none';
+        });
+      }
+
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var tag = (btn.getAttribute('data-tag') || '').trim();
+          btns.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          cards.forEach(function (card) {
+            var tags = (card.getAttribute('data-tags') || '');
+            var show = !tag || tags.indexOf(tag) !== -1;
+            card.style.display = show ? '' : 'none';
+          });
+          updateTitleVisibility();
+        });
+      });
+
+      updateTitleVisibility();
+    })();
+  </script>
+</body>
+
+</html>

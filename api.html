@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API 文档 | TraderEdgeAIFactor</title>
+  <meta name="description" content="TraderEdgAIFactor.dll API 文档：快速接入、按场景选 API、统一框架、削单/R²/因子详情。企业用户 3 步接入。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #fafafa;
+      --text: #202020;
+      --text-muted: #5c5c5c;
+      --green: #4da29e;
+      --green-dark: #3d8582;
+      --gray-pill: #f0f0f0;
+      --gray-border: #e8e8e8;
+      --terminal-bg: #1e1e1e;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max-w: 1100px;
+      --max-w-narrow: 720px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ----- API 文档：左侧目录 + 右侧内容 ----- */
+    .api-doc-wrap {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+      min-height: calc(100vh - 56px);
+    }
+
+    .api-sidebar {
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      padding: 1.25rem 0 1.25rem 1.25rem;
+      border-right: 1px solid var(--gray-border);
+      background: var(--bg-alt);
+    }
+
+    .api-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .api-toc a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: var(--radius-sm);
+      border-left: 2px solid transparent;
+    }
+
+    .api-toc a:hover {
+      color: var(--green);
+      background: var(--gray-pill);
+    }
+
+    .api-toc a.active {
+      color: var(--green);
+      font-weight: 600;
+      border-left-color: var(--green);
+      background: rgba(77, 162, 158, 0.08);
+    }
+
+    .api-main {
+      padding: 1.5rem 2rem 3rem;
+      min-width: 0;
+    }
+
+    /* 折叠区块 */
+    .sec-collapse {
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .sec-collapse summary {
+      list-style: none;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text);
+      background: var(--bg-alt);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sec-collapse summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .sec-collapse summary::before {
+      content: "▸ ";
+      color: var(--green);
+      margin-right: 0.35rem;
+    }
+
+    .sec-collapse[open] summary::before {
+      content: "▾ ";
+    }
+
+    .sec-collapse[open] summary {
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .sec-collapse .sec-body {
+      padding: 1rem 1.25rem;
+      background: var(--bg);
+    }
+
+    /* 使用说明 / 范例 */
+    .api-usage {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin: 0.5rem 0 0.75rem;
+      line-height: 1.6;
+    }
+
+    .api-example {
+      margin-top: 0.75rem;
+    }
+
+    .api-example-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .api-example {
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--gray-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .api-example .api-example-term-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 0.75rem;
+      background: #f5f6f7;
+      gap: 6px;
+    }
+    .api-example .api-example-term-bar span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .api-example .api-example-term-bar .dot-r { background: #ff5f56; }
+    .api-example .api-example-term-bar .dot-y { background: #ffbd2e; }
+    .api-example .api-example-term-bar .dot-g { background: #27c93f; }
+    .api-example pre {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 0.8rem;
+      background: var(--bg-alt) !important;
+      color: var(--text) !important;
+      padding: 0.75rem 1rem;
+      border-radius: 0;
+      border: none;
+      overflow-x: auto;
+      margin: 0;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    /* 覆盖 Prism 深色主题：浅色背景 + 深色文字，无下划线 */
+    .api-example pre[class*="language-"],
+    .api-example .token { text-decoration: none !important; }
+    .api-example .token.comment { color: #6a9955 !important; }
+    .api-example .token.keyword { color: #0565c4 !important; font-weight: 600; }
+    .api-example .token.string { color: #0e7c3a !important; }
+    .api-example .copy-wrap { position: relative; display: block; }
+    .api-copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-family: inherit;
+      background: rgba(255,255,255,0.15);
+      color: #d4d4d4;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .api-copy-btn:hover { background: rgba(255,255,255,0.25); }
+    .api-copy-btn.copied { background: var(--green); color: #fff; border-color: var(--green); }
+    .quick-start-banner {
+      background: linear-gradient(135deg, rgba(77,162,158,0.08) 0%, rgba(77,162,158,0.02) 100%);
+      border: 1px solid rgba(77,162,158,0.2);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .quick-start-banner h2 { font-size: 1.25rem; margin: 0 0 0.75rem; color: var(--text); }
+    .quick-start-banner p { margin: 0 0 1rem; font-size: 0.95rem; color: var(--text-muted); }
+    .quick-start-banner p:last-of-type { margin-bottom: 0; }
+    .scenario-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .scenario-card {
+      display: block;
+      padding: 0.85rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .scenario-card:hover { border-color: var(--green); background: rgba(77,162,158,0.06); }
+    .scenario-card small { display: block; font-weight: 400; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
+
+    /* ----- Nav（与 index 一致）----- */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid var(--gray-border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      height: 100%;
+    }
+
+    .nav-logo img {
+      max-height: 28px;
+      width: auto;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .nav-logo:hover img {
+      opacity: 0.85;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a.nav-current {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .nav-links a.nav-free {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav-links a.nav-free:hover {
+      color: var(--text);
+    }
+
+    .nav-links a.nav-cta {
+      padding: 0.5rem 1rem;
+      background: var(--green);
+      color: #fff !important;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-links a.nav-cta:hover {
+      background: var(--green-dark);
+      color: #fff !important;
+    }
+
+    .nav-cta .nav-price {
+      font-weight: 500;
+      font-size: 0.8rem;
+      opacity: 0.95;
+    }
+
+    .nav-cta .nav-price s {
+      color: rgba(255, 255, 255, 0.7);
+      margin-right: 0.25rem;
+    }
+
+    /* ----- 文档页头部 ----- */
+    .doc-header {
+      padding: 2.5rem 0 1.5rem;
+      border-bottom: 1px solid var(--gray-border);
+      margin-bottom: 1.5rem;
+    }
+
+    .doc-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .doc-header .note {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .api-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .api-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.75rem;
+      background: var(--gray-pill);
+      border: 1px solid var(--gray-border);
+      border-radius: 999px;
+    }
+
+    .api-nav a:hover {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    /* ----- 文档区块 ----- */
+    .sec {
+      margin-bottom: 2.5rem;
+    }
+
+    .sec h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 2rem 0 0.75rem;
+      color: var(--text);
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .sec h2:first-child {
+      margin-top: 0;
+    }
+
+    .sec h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .sec h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 1rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    .api-block {
+      background: var(--bg-alt);
+      border: 1px solid var(--gray-border);
+      border-left: 3px solid var(--green);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .api-name {
+      font-weight: 600;
+      color: var(--green);
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .api-sig {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(0,0,0,0.03);
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .ret {
+      color: var(--green);
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* 行内 code：覆盖 Prism 黑色背景，仅加深加粗无背景 */
+    code,
+    :not(pre) > code,
+    p code, li code, td code, th code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 0.9em;
+      font-weight: 600;
+      color: var(--text) !important;
+      padding: 0;
+      background: transparent !important;
+      border: none !important;
+    }
+    /* 代码块内的 code 不应用行内样式，避免多余边框/下划线 */
+    .api-example pre code,
+    .api-example pre code[class*="language-"] {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      font-size: inherit;
+      font-weight: 400 !important;
+      color: inherit !important;
+    }
+    /* 示例代码中英切换：按 body.lang-zh / lang-en 显示对应版本 */
+    .lang-en .api-example pre[data-lang="zh"] { display: none !important; }
+    .lang-en .api-example pre[data-lang="en"] { display: block !important; }
+    .lang-zh .api-example pre[data-lang="en"] { display: none !important; }
+    .lang-zh .api-example pre[data-lang="zh"] { display: block !important; }
+
+    ul {
+      margin: 0.25rem 0;
+      padding-left: 1.25rem;
+    }
+
+    .struct-def {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(0,0,0,0.03);
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      white-space: pre;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+    }
+
+    /* ----- Footer（与 index 一致）----- */
+    footer {
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-border);
+      background: var(--bg);
+      margin-top: 3rem;
+    }
+
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--green);
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .nav-lang { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-lang button {
+      padding: 0.35rem 0.6rem; background: transparent; border: 1px solid var(--gray-border); border-radius: var(--radius-sm);
+      font-size: 0.8rem; font-weight: 500; color: var(--text-muted); cursor: pointer; font-family: inherit;
+    }
+    .nav-lang button:hover { color: var(--text); border-color: var(--text-muted); }
+    .nav-lang button.active { color: var(--green); border-color: var(--green); background: rgba(77, 162, 158, 0.08); }
+    .nav-toggle { display: none; width: 44px; height: 44px; padding: 0; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text); cursor: pointer; font-size: 1.25rem; align-items: center; justify-content: center; }
+    .nav-toggle:hover { background: var(--gray-pill); }
+    @media (max-width: 900px) {
+      .nav { flex-wrap: wrap; padding: 0 1rem; padding-bottom: 0; height: auto; min-height: 56px; }
+      .nav-links { display: none; order: 10; width: 100%; flex-direction: column; gap: 0; padding: 0.5rem 0 1rem; border-top: 1px solid var(--gray-border); }
+      .nav.nav-open .nav-links { display: flex; }
+      .nav-links a { display: flex; align-items: center; padding: 0.75rem 1rem; min-height: 44px; box-sizing: border-box; }
+      .nav-links a:hover { background: var(--gray-pill); }
+      .nav-toggle { display: flex; min-width: 44px; min-height: 44px; }
+      .nav-lang { margin-left: auto; margin-right: 0.25rem; }
+      .nav-lang button { min-height: 36px; min-width: 44px; }
+      .api-doc-wrap { grid-template-columns: 1fr; }
+      .api-sidebar { position: static; height: auto; max-height: 200px; overflow-y: auto; border-right: none; border-bottom: 1px solid var(--gray-border); padding: 0.75rem 1rem; }
+      .api-main { padding: 1rem 1.25rem 2rem; }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0 1rem; }
+      .api-main { padding: 1rem 1rem 1.5rem; }
+      .api-block { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .doc-header { padding: 1.5rem 0 1rem; }
+    }
+  </style>
+</head>
+
+<body data-i18n-page="api">
+  <!-- Nav（与 index 一致） -->
+  <nav class="nav" id="main-nav">
+    <a href="index.html" class="nav-logo"><img src="logo.png" alt="TraderEdgeAIFactor" /></a>
+    <div class="nav-links">
+      <a href="index.html#how" data-i18n="nav_how">极速上手</a>
+      <a href="index.html#features" data-i18n="nav_features">核心能力</a>
+      <a href="factors.html" data-i18n="nav_factors">算法因子</a>
+      <a href="api.html" class="nav-current" data-i18n="nav_api">API 文档</a>
+      <a href="index.html#pricing" data-i18n="nav_pricing">定价</a>
+      <a href="index.html#faq" data-i18n="nav_faq">常见问题</a>
+      <a href="index.html#pricing" class="nav-cta"><span data-i18n="nav_cta">购买专业版</span> <span class="nav-price" data-i18n="nav_price" data-i18n-html="1"><s>$38/月</s> $30/月</span></a>
+    </div>
+    <div class="nav-lang">
+      <button type="button" class="lang-btn active" data-lang="zh" aria-label="中文">中文</button>
+      <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
+    </div>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="菜单" data-i18n-attr="aria-label:nav_toggle_aria">☰</button>
+  </nav>
+
+  <div class="api-doc-wrap">
+    <aside class="api-sidebar">
+      <nav class="api-toc" aria-label="文档目录">
+        <a href="#about" data-i18n="about_title">介绍我们</a>
+        <a href="#quick" data-i18n="quick_title">快速完成对接</a>
+        <a href="#concepts" data-i18n="toc_concepts">必读概念</a>
+        <a href="#scene-direction" data-i18n="scene_a_title">场景 A：只要方向/动作</a>
+        <a href="#scene-r2" data-i18n="scene_b_title">场景 B：只要趋势强度 R²</a>
+        <a href="#scene-reduction" data-i18n="scene_c_title">场景 C：只要削单建议</a>
+        <a href="#multi-factor" data-i18n="toc_multi_factor">多因子组合</a>
+        <a href="api-advanced.html" data-i18n="toc_advanced">进阶版（高级用户）→</a>
+      </nav>
+    </aside>
+    <main class="api-main">
+      <!-- ========== 一、介绍我们 ========== -->
+      <section class="sec" id="about">
+        <h2 data-i18n="about_title">介绍我们</h2>
+        <p data-i18n="about_p1"><strong>TraderEdgAIFactor</strong> 是一个基于 C++ 开发的算法因子库（DLL），供 <strong>MetaTrader 4 / 5</strong> 通过 MQL4/MQL5 直接调用。它把「趋势判断、震荡识别、削单建议、R² 趋势强度」等能力封装成统一接口，你只需把 DLL 和头文件放进 MT4/MT5 目录，在 EA 里几行代码即可拿到方向、动作、置信度等信号。</p>
+        <p data-i18n="about_p2">能解决什么问题：<strong>接入简单</strong>（无需自写复杂因子算法）、<strong>多因子可选</strong>（按策略选不同因子 ID）、<strong>信号统一</strong>（方向、动作、regime 等格式一致，便于和你的开平仓逻辑对接）。</p>
+        <p data-i18n="about_p3">典型用法一句话：<strong>创建因子 → 传入 K 线数据 → 调用 Process → 读取方向、动作、置信度</strong>。削单与 R² 为独立 API，按需调用。下面「快速完成对接」按场景给出极简代码和字段说明，让你一次性跑通。</p>
+      </section>
+
+      <!-- ========== 二、快速完成对接 ========== -->
+      <section class="sec quick-start-banner" id="quick">
+        <h2 data-i18n="quick_title">快速完成对接</h2>
+        <p data-i18n="quick_p">按你的需求选一个场景，按下面步骤即可对接成功。每个场景都给出极简代码，并<strong>对代码里用到的每个字段、每个入参/出参做解释</strong>，方便你一次跑通。</p>
+
+        <div class="scenario-cards" style="margin-bottom: 1.5rem;">
+          <a href="#scene-direction" class="scenario-card"><span data-i18n="scenario_card_a_span">只要方向/动作</span><small data-i18n="scenario_card_a_small">单因子 Init→Update→Signal，拿 direction/action</small></a>
+          <a href="#scene-r2" class="scenario-card"><span data-i18n="scenario_card_b_span">只要趋势强度 R²</span><small data-i18n="scenario_card_b_small">TEA_RSquared(closes, n) 一行取值</small></a>
+          <a href="#scene-reduction" class="scenario-card"><span data-i18n="scenario_card_c_span">只要削单建议</span><small data-i18n="scenario_card_c_small">TEA_ReductionRecommend 按需调用</small></a>
+          <a href="api-advanced.html" class="scenario-card"><span data-i18n="scenario_card_d_span">查完整 API</span><small data-i18n="scenario_card_d_small">进阶版：全部函数、参数、返回值</small></a>
+        </div>
+
+        <h3 data-i18n="precond_title">前置条件（所有场景通用）</h3>
+        <ul>
+          <li data-i18n="precond_li1" data-i18n-html="1">将 <code>TraderEdgAIFactor.dll</code> 放到 MT4 的 <code>MQL4/Libraries</code>（或 MT5 的 <code>MQL5/Libraries</code>）。</li>
+          <li data-i18n="precond_li2" data-i18n-html="1">将 <code>TraderEdgAIFactor.mqh</code> 放到 <code>MQL4/Include</code>（或 <code>MQL5/Include</code>）。</li>
+          <li data-i18n="precond_li3" data-i18n-html="1">在 EA 中 <code>#include &lt;TraderEdgAIFactor.mqh&gt;</code>（MQ4 也可用 <code>#import "TraderEdgAIFactor.dll"</code> 声明函数）。</li>
+          <li data-i18n="precond_li4">若 MT 提示不允许 DLL，请在「工具 → 选项 → 专家顾问」中勾选「允许 DLL 导入」。</li>
+        </ul>
+
+        <h3 style="margin-top: 1.5rem;" data-i18n="quick_minimal_title">5 分钟跑通：最小代码（推荐）</h3>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;" data-i18n="quick_minimal_p" data-i18n-html="1">用 CTEAFactor 按名称初始化，Update 后 Signal 一次拿齐方向/动作。不知道选哪个因子？用 <code>"HedgeRegime"</code> 即可。只需单个值时可用快捷函数：<code>TEA_ATR()</code>、<code>TEA_Direction("HedgeRegime")</code>、<code>TEA_Action("HedgeRegime")</code>、<code>TEA_Brake("HedgeCore")</code>（适合每 Bar 一次调用）。</p>
+        <div class="api-example">
+          <div class="copy-wrap">
+            <pre data-lang="zh"><code class="language-cpp" id="code-minimal">#include &lt;TraderEdgAIFactor.mqh&gt;
+CTEAFactor factor;
+int OnInit() {
+  if (!factor.Init("HedgeRegime", 200)) return INIT_FAILED;  // 按名称，不必记 ID
+  return INIT_SUCCEEDED;
+}
+void OnDeinit(int r) { factor.Destroy(); }
+void OnTick() {
+  TEAStandardSignalData sig;
+  if (!factor.Update() || !factor.Signal(sig)) return;
+  if (sig.action != 0)  // 0=FLAT 1=LONG 2=SHORT
+    Print("方向:", sig.direction, " 动作:", sig.action, " 置信度:", sig.confidence);
+}</code></pre>
+            <button type="button" class="api-copy-btn" data-copy="code-minimal">复制</button>
+          </div>
+        </div>
+
+        <h3 id="concepts" style="margin-top: 1.5rem;" data-i18n="toc_concepts">必读概念</h3>
+        <ul style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+          <li data-i18n="concept_id" data-i18n-html="1"><strong>因子 ID / 名称</strong>：0–16 对应不同算法，常用 2（HedgeRegime）、8（HedgeCore）。推荐用 <code>Init("HedgeRegime")</code> 按名称，不必记 ID。</li>
+          <li data-i18n="concept_handle" data-i18n-html="1"><strong>句柄 (handle)</strong>：Create 或 Init 返回的 int，后续 Process、Get* 都要传。CTEAFactor 封装后无需直接操作。</li>
+          <li data-i18n="concept_process"><strong>Process / Update</strong>：每次 K 线数据更新后调用一次，之后才能读 Direction、Action 等。</li>
+          <li data-i18n="concept_action"><strong>方向 (direction) / 动作 (action)</strong>：direction 为 -1 / 0 / +1；action 为 0=FLAT / 1=LONG / 2=SHORT。</li>
+          <li data-i18n="concept_regime"><strong>regime</strong>：1=趋势，2=震荡，0=不确定，-1=高风险。可用于减仓或刹车逻辑。</li>
+        </ul>
+
+        <!-- 场景 A：只要方向/动作 -->
+        <div class="api-block" id="scene-direction">
+          <div class="api-name" data-i18n="scene_a_title">场景 A：只要方向/动作</div>
+          <p data-i18n="scene_a_desc" data-i18n-html="1">在 EA 里拿到「做多 / 做空 / 观望」以及方向强度，用于开平仓判断。下面用<strong>因子 ID = 2（HedgeRegime）</strong> 做示例，推荐对冲/网格类策略使用；其他因子只需把 <code>TEA_FactorCreate(2)</code> 里的 2 改成 0/1/3，详见 <a href="factors.html">算法因子库</a>。</p>
+          <div class="api-example">
+            <div class="api-example-title" data-i18n="scene_a_code_title">极简代码（MQ4，复制即用）</div>
+            <div class="copy-wrap">
+              <pre data-lang="zh"><code class="language-cpp" id="code-scene-a">#include &lt;TraderEdgAIFactor.mqh&gt;
+int g_h = 0;
+int OnInit() {
+  g_h = TEA_FactorCreate(2);  // 2 = HedgeRegime，推荐先用这个
+  return (g_h != 0) ? INIT_SUCCEEDED : INIT_FAILED;
+}
+void OnDeinit(int r) { if (g_h != 0) TEA_FactorDestroy(g_h); }
+void OnTick() {
+  if (g_h == 0) return;
+  double o[], h[], l[], c[], v[]; int n = 200;
+  ArrayResize(o,n); ArrayResize(h,n); ArrayResize(l,n); ArrayResize(c,n); ArrayResize(v,n);
+  for (int i = 0; i < n; i++) {
+    int bar = n - 1 - i;
+    o[i] = iOpen(Symbol(), PERIOD_CURRENT, bar);
+    h[i] = iHigh(Symbol(), PERIOD_CURRENT, bar);
+    l[i] = iLow(Symbol(), PERIOD_CURRENT, bar);
+    c[i] = iClose(Symbol(), PERIOD_CURRENT, bar);
+    v[i] = (double)iVolume(Symbol(), PERIOD_CURRENT, bar);
+  }
+  if (TEA_FactorProcess(g_h, o, h, l, c, v, n) != 1) return;
+  double dir = TEA_FactorGetDirection(g_h);
+  int act = TEA_FactorGetAction(g_h);
+  int regime = TEA_FactorGetRegime(g_h);
+  // 这里用 dir / act / regime 做你的开平仓逻辑
+}</code></pre>
+              <pre data-lang="en" style="display:none"><code class="language-cpp" id="code-scene-a-en">#include &lt;TraderEdgAIFactor.mqh&gt;
+int g_h = 0;
+int OnInit() {
+  g_h = TEA_FactorCreate(2);  // 2 = HedgeRegime, recommended first
+  return (g_h != 0) ? INIT_SUCCEEDED : INIT_FAILED;
+}
+void OnDeinit(int r) { if (g_h != 0) TEA_FactorDestroy(g_h); }
+void OnTick() {
+  if (g_h == 0) return;
+  double o[], h[], l[], c[], v[]; int n = 200;
+  ArrayResize(o,n); ArrayResize(h,n); ArrayResize(l,n); ArrayResize(c,n); ArrayResize(v,n);
+  for (int i = 0; i < n; i++) {
+    int bar = n - 1 - i;
+    o[i] = iOpen(Symbol(), PERIOD_CURRENT, bar);
+    h[i] = iHigh(Symbol(), PERIOD_CURRENT, bar);
+    l[i] = iLow(Symbol(), PERIOD_CURRENT, bar);
+    c[i] = iClose(Symbol(), PERIOD_CURRENT, bar);
+    v[i] = (double)iVolume(Symbol(), PERIOD_CURRENT, bar);
+  }
+  if (TEA_FactorProcess(g_h, o, h, l, c, v, n) != 1) return;
+  double dir = TEA_FactorGetDirection(g_h);
+  int act = TEA_FactorGetAction(g_h);
+  int regime = TEA_FactorGetRegime(g_h);
+  // Use dir / act / regime for your open/close logic
+}</code></pre>
+              <button type="button" class="api-copy-btn" data-copy="code-scene-a" data-copy-en="code-scene-a-en" data-i18n="copy_btn">复制</button>
+            </div>
+          </div>
+          <h4 data-i18n="scene_a_table_h4">字段与接口说明（本场景用到的）</h4>
+          <table>
+            <thead><tr><th data-i18n="table_name">名称</th><th data-i18n="table_meaning">含义</th><th data-i18n="table_usage">怎么用</th></tr></thead>
+            <tbody>
+              <tr><td><code>g_h</code></td><td data-i18n="scene_a_g_h_m">因子句柄</td><td data-i18n="scene_a_g_h_u">由 TEA_FactorCreate(2) 返回，后续 Process、GetDirection 等都要传这个值；MQ4 里是 int。</td></tr>
+              <tr><td><code>o[], h[], l[], c[], v[]</code></td><td data-i18n="scene_a_ohlcv_m">K 线数组</td><td data-i18n="scene_a_ohlcv_u">开盘、最高、最低、收盘、成交量；下标 0 = 最旧一根，n-1 = 最新一根，顺序不能反。</td></tr>
+              <tr><td><code>n = 200</code></td><td data-i18n="scene_a_n_m">K 线根数</td><td data-i18n="scene_a_n_u">至少 50，建议 200；数组长度要和 Process 的 count 一致。</td></tr>
+              <tr><td><code>TEA_FactorProcess(g_h, o, h, l, c, v, n)</code></td><td data-i18n="scene_a_process_m">执行一次因子计算</td><td data-i18n="scene_a_process_u">每次 tick 或新 K 线时调用一次；返回 1 表示成功，之后才能读 GetDirection/GetAction。</td></tr>
+              <tr><td><code>dir = TEA_FactorGetDirection(g_h)</code></td><td data-i18n="scene_a_dir_m">方向</td><td data-i18n="scene_a_dir_u">double：-1.0 = 偏空，0 = 中性，+1.0 = 偏多；可用于仓位方向或过滤。</td></tr>
+              <tr><td><code>act = TEA_FactorGetAction(g_h)</code></td><td data-i18n="scene_a_act_m">动作</td><td data-i18n="scene_a_act_u">int：0 = FLAT（观望），1 = LONG（做多），2 = SHORT（做空）；直接用于开平仓判断。</td></tr>
+              <tr><td><code>regime = TEA_FactorGetRegime(g_h)</code></td><td data-i18n="scene_a_regime_m">市场状态</td><td data-i18n="scene_a_regime_u">int：1 = 趋势，2 = 震荡，-1 = 高风险；可用于减仓或刹车逻辑。</td></tr>
+            </tbody>
+          </table>
+          <p data-i18n="scene_a_success"><strong>对接成功</strong>：编译通过，EA 挂到图表后，在 OnTick 里能正确读到 dir / act / regime（例如用 Print 输出），即表示本场景对接成功。使用 MT5 时，MQ5 示例见本页底部「进阶版」入口。</p>
+        </div>
+
+        <!-- 场景 B：只要趋势强度 R² -->
+        <div class="api-block" id="scene-r2">
+          <div class="api-name" data-i18n="scene_b_title">场景 B：只要趋势强度 R²</div>
+          <p data-i18n="scene_b_desc">在 EA 里拿到 0～1 的趋势强度（R²），替代手写 R² 计算，数值更稳定、抗异常值。无状态，每次传入收盘价数组和长度即可。</p>
+          <div class="api-example">
+            <div class="api-example-title" data-i18n="scene_b_code_title">极简代码（MQ4）</div>
+            <div class="copy-wrap">
+              <pre data-lang="zh"><code class="language-cpp" id="code-scene-b">#include &lt;TraderEdgAIFactor.mqh&gt;
+void OnTick() {
+  double closes[]; int n = 100;
+  ArrayResize(closes, n);
+  CopyClose(Symbol(), PERIOD_CURRENT, 0, n, closes);
+  double r2 = TEA_RSquared(closes, n);
+  // r2 在 0～1 之间，越大趋势越强，可用于过滤或仓位权重
+}</code></pre>
+              <pre data-lang="en" style="display:none"><code class="language-cpp" id="code-scene-b-en">#include &lt;TraderEdgAIFactor.mqh&gt;
+void OnTick() {
+  double closes[]; int n = 100;
+  ArrayResize(closes, n);
+  CopyClose(Symbol(), PERIOD_CURRENT, 0, n, closes);
+  double r2 = TEA_RSquared(closes, n);
+  // r2 in 0~1; higher = stronger trend; use for filter or position weight
+}</code></pre>
+              <button type="button" class="api-copy-btn" data-copy="code-scene-b" data-copy-en="code-scene-b-en" data-i18n="copy_btn">复制</button>
+            </div>
+          </div>
+          <h4 data-i18n="scene_b_table_h4">字段与接口说明</h4>
+          <table>
+            <thead><tr><th data-i18n="table_name">名称</th><th data-i18n="table_meaning">含义</th><th data-i18n="table_usage">怎么用</th></tr></thead>
+            <tbody>
+              <tr><td><code>closes[]</code></td><td data-i18n="scene_b_closes_m">收盘价数组</td><td data-i18n="scene_b_closes_u">顺序：下标 0 = 最旧，n-1 = 最新；由 CopyClose 或等价方式填充。</td></tr>
+              <tr><td><code>n</code></td><td data-i18n="scene_b_n_m">数组长度（周期）</td><td data-i18n="scene_b_n_u">即 R² 计算用的 K 线根数，建议 2～512；count &lt; 2 时函数返回 0。</td></tr>
+              <tr><td><code>TEA_RSquared(closes, n)</code></td><td data-i18n="scene_b_r2_m">计算 R²</td><td data-i18n="scene_b_r2_u">返回值 double，范围 0～1：越接近 1 趋势越强，接近 0 表示无明显趋势。</td></tr>
+            </tbody>
+          </table>
+          <p data-i18n="scene_b_success" data-i18n-html="1"><strong>对接成功</strong>：编译通过，挂图后能稳定读到 0～1 的 r2 值即表示成功。需要 Theil-Sen 或指数加权等扩展时，见 <a href="api-advanced.html#rsquared">进阶版 · R² API</a>（TEA_RSquaredEx）。</p>
+        </div>
+
+        <!-- 场景 C：只要削单建议 -->
+        <div class="api-block" id="scene-reduction">
+          <div class="api-name" data-i18n="scene_c_title">场景 C：只要削单建议</div>
+          <p data-i18n="scene_c_desc">在对冲/马丁类 EA 里，根据当前多空两侧持仓与市场状态，拿到「本 tick 是否建议削单、削哪一侧、先平盈利还是亏损」等推荐。无状态，每次传入多空两侧的盈亏、手数、开仓时间等数组及少量参数即可。</p>
+          <div class="api-example">
+            <div class="api-example-title" data-i18n="scene_c_code_title">极简用法说明</div>
+            <p data-i18n="scene_c_api_p" data-i18n-html="1">削单 API（<code>TEA_ReductionRecommend</code>）入参较多，这里只说明<strong>核心含义</strong>和<strong>返回值怎么用</strong>；完整参数与 MQ4/MQ5 示例见 <a href="api-advanced.html#reduction">进阶版 · 削单 API</a>。</p>
+            <ul>
+              <li data-i18n="scene_c_in_param" data-i18n-html="1"><strong>入参</strong>：多侧与空侧各自的 profit[]、lots[]、open_time[]（按开仓时间升序），以及 regime、confidence、净利目标、是否允许跨侧等。若同时使用因子接口，regime、confidence 可直接传 <code>TEA_FactorGetRegime(句柄)</code>、<code>TEA_FactorGetConfidence(句柄)</code>；进阶版中有每个参数的说明与推荐取值。</li>
+              <li data-i18n="scene_c_return" data-i18n-html="1"><strong>返回</strong>：1 = 本 tick 有削单推荐，0 = 无推荐。通过 out_action、out_side、out_profit_start_index、out_profit_count 等输出参数可得到「单侧削多/削空」或「跨侧」以及要平的仓位索引与数量。</li>
+            </ul>
+          </div>
+          <h4 data-i18n="scene_c_table_h4">关键输出字段（怎么用）</h4>
+          <table>
+            <thead><tr><th data-i18n="table_output">输出</th><th data-i18n="table_meaning">含义</th><th data-i18n="table_usage">怎么用</th></tr></thead>
+            <tbody>
+              <tr><td data-i18n="scene_c_ret_m">返回值 1/0</td><td data-i18n="scene_c_ret_u">是否有推荐</td><td data-i18n="scene_c_ret_usage">1 = 有削单建议，可依 out_* 执行平仓；0 = 本 tick 不推荐削单。</td></tr>
+              <tr><td><code>out_action</code></td><td data-i18n="scene_c_action_m">动作类型</td><td data-i18n="scene_c_action_usage">1 = 单侧削多，2 = 单侧削空，3 = 跨侧削单。</td></tr>
+              <tr><td><code>out_side</code></td><td data-i18n="scene_c_side_m">亏损侧</td><td data-i18n="scene_c_side_usage">配合 out_loss_index 等可定位要平的亏损单。</td></tr>
+              <tr><td><code>out_profit_start_index</code> / <code>out_profit_count</code></td><td data-i18n="scene_c_profit_m">盈利段</td><td data-i18n="scene_c_profit_usage">先平盈利段（从 start_index 起共 profit_count 笔），再平亏损。</td></tr>
+            </tbody>
+          </table>
+          <p data-i18n="scene_c_success"><strong>对接成功</strong>：在 EA 里按进阶版示例准备好多空两侧数组和参数，调用后能根据返回值与 out_* 正确执行一次「先平盈利再平亏损」的削单逻辑即表示成功。</p>
+        </div>
+
+        <!-- 多因子组合 -->
+        <div class="api-block" id="multi-factor">
+          <div class="api-name" data-i18n="toc_multi_factor">多因子组合</div>
+          <p data-i18n="multi_intro">用 CTEAFactorSelector 按名称组合多个因子：单因子直用、双因子主备（主 70% 子 30%）、3–8 因子投票（按 accuracy 加权）。组合因子（如 HedgeCore）与原子因子等价，都可参与。</p>
+          <h4 data-i18n="multi_usage_1">用法一：单因子</h4>
+          <div class="api-example">
+            <div class="copy-wrap">
+              <pre data-lang="zh"><code class="language-cpp" id="code-multi-1">CTEAFactor factor;
+factor.Init("HedgeRegime");  // 或 factor.Init("HedgeCore");
+if (factor.Update()) {
+  TEAStandardSignalData sig;
+  factor.Signal(sig);
+  // sig.direction, sig.action, sig.confidence...
+}</code></pre>
+              <pre data-lang="en" style="display:none"><code class="language-cpp" id="code-multi-1-en">CTEAFactor factor;
+factor.Init("HedgeRegime");  // or factor.Init("HedgeCore");
+if (factor.Update()) {
+  TEAStandardSignalData sig;
+  factor.Signal(sig);
+  // sig.direction, sig.action, sig.confidence...
+}</code></pre>
+              <button type="button" class="api-copy-btn" data-copy="code-multi-1" data-copy-en="code-multi-1-en" data-i18n="copy_btn">复制</button>
+            </div>
+          </div>
+          <h4 data-i18n="multi_usage_2">用法二：双因子主备（主 70% + 子 30%）</h4>
+          <div class="api-example">
+            <div class="copy-wrap">
+              <pre data-lang="zh"><code class="language-cpp" id="code-multi-2">CTEAFactorSelector sel;
+sel.Init("HedgeCore,VolatilityAdjustedMomentum", "HedgeCore");  // 主=HedgeCore
+if (sel.Update()) {
+  TEAStandardSignalData sig;
+  sel.GetStandardSignal(sig);
+  // sig 已是两因子加权后的结果
+}</code></pre>
+              <pre data-lang="en" style="display:none"><code class="language-cpp" id="code-multi-2-en">CTEAFactorSelector sel;
+sel.Init("HedgeCore,VolatilityAdjustedMomentum", "HedgeCore");  // main=HedgeCore
+if (sel.Update()) {
+  TEAStandardSignalData sig;
+  sel.GetStandardSignal(sig);
+  // sig is weighted result of two factors
+}</code></pre>
+              <button type="button" class="api-copy-btn" data-copy="code-multi-2" data-copy-en="code-multi-2-en" data-i18n="copy_btn">复制</button>
+            </div>
+          </div>
+          <h4 data-i18n="multi_usage_3">用法三：多因子投票（3–8 个）</h4>
+          <div class="api-example">
+            <div class="copy-wrap">
+              <pre data-lang="zh"><code class="language-cpp" id="code-multi-3">CTEAFactorSelector sel;
+sel.Init("HedgeCore,VolatilityAdjustedMomentum,AdaptiveTrendIntensity,HurstRegime");
+if (sel.Update()) {
+  TEAStandardSignalData sig;
+  sel.GetStandardSignal(sig);
+  // 方向按 accuracy 加权，regime 取最严
+}</code></pre>
+              <pre data-lang="en" style="display:none"><code class="language-cpp" id="code-multi-3-en">CTEAFactorSelector sel;
+sel.Init("HedgeCore,VolatilityAdjustedMomentum,AdaptiveTrendIntensity,HurstRegime");
+if (sel.Update()) {
+  TEAStandardSignalData sig;
+  sel.GetStandardSignal(sig);
+  // direction weighted by accuracy, regime takes strictest
+}</code></pre>
+              <button type="button" class="api-copy-btn" data-copy="code-multi-3" data-copy-en="code-multi-3-en" data-i18n="copy_btn">复制</button>
+            </div>
+          </div>
+          <p class="note" data-i18n="multi_note">汇总只产出 StandardSignal；要 ATR、Brake 等扩展字段时，需单独持有一个因子句柄调用 ATR()、Brake() 等。</p>
+        </div>
+      </section>
+
+      <!-- 进阶版为独立页面，高级用户可点击下方入口 -->
+      <section class="sec quick-start-banner" id="advanced-cta">
+        <h2 data-i18n="advanced_cta_title">进阶版（高级用户）</h2>
+        <p data-i18n="advanced_cta_p">若需<strong>每个函数、每个入参/出参</strong>的完整说明，以及 <strong>MQ4 与 MQ5</strong> 双平台代码示例、注释与注意事项，请查看进阶版 API 文档。简单对接与进阶版已分开成两页，普通用户与高级用户互不干扰。</p>
+        <p><a href="api-advanced.html" class="nav-cta" style="display: inline-flex; margin-top: 0.5rem;" data-i18n="advanced_cta_btn">进入进阶版 API 文档 →</a></p>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var toc = document.querySelector('.api-toc');
+      var links = toc ? toc.querySelectorAll('a[href^="#"]') : [];
+      var sections = [];
+      links.forEach(function (a) {
+        var id = a.getAttribute('href').slice(1);
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el, a: a });
+      });
+      function updateActive() {
+        var top = window.scrollY + 80;
+        for (var i = sections.length - 1; i >= 0; i--) {
+          var s = sections[i];
+          if (s.el.getBoundingClientRect().top + window.scrollY <= top) {
+            links.forEach(function (l) { l.classList.remove('active'); });
+            s.a.classList.add('active');
+            return;
+          }
+        }
+        if (sections.length) links.forEach(function (l) { l.classList.remove('active'); });
+      }
+      window.addEventListener('scroll', updateActive);
+      window.addEventListener('load', updateActive);
+    })();
+    (function () {
+      document.querySelectorAll('.api-copy-btn[data-copy]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var lang = window.I18N && window.I18N.getLang ? window.I18N.getLang() : 'zh';
+          var id = (lang === 'en' && btn.getAttribute('data-copy-en')) ? btn.getAttribute('data-copy-en') : btn.getAttribute('data-copy');
+          var pre = id ? document.getElementById(id) : null;
+          if (!pre) return;
+          var text = pre.textContent || '';
+          var t = window.I18N && window.I18N.LANG && window.I18N.LANG.api && window.I18N.LANG.api[window.I18N.getLang()];
+          var copyDone = t && t.copy_done ? t.copy_done : '已复制';
+          var copyBtn = t && t.copy_btn ? t.copy_btn : '复制';
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+              btn.textContent = copyDone;
+              btn.classList.add('copied');
+              setTimeout(function () { btn.textContent = copyBtn; btn.classList.remove('copied'); }, 2000);
+            });
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            btn.textContent = copyDone;
+            btn.classList.add('copied');
+            setTimeout(function () { btn.textContent = copyBtn; btn.classList.remove('copied'); }, 2000);
+          }
+        });
+      });
+    })();
+  </script>
+
+  <!-- Footer（与 index 一致） -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="index.html">TraderEdgeAIFactor</a>
+        <a href="releases/v1.0/mql4-include.zip" download data-i18n="footer_download">下载</a>
+        <a href="index.html#how" data-i18n="footer_how">极速上手</a>
+        <a href="api.html" data-i18n="footer_api">API 文档</a>
+        <a href="api-advanced.html">进阶版</a>
+        <a href="index.html#pricing" data-i18n="footer_pricing">定价</a>
+        <a href="index.html#faq" data-i18n="footer_faq">常见问题</a>
+      </div>
+      <p class="footer-copy" data-i18n="footer_copy">© TraderEdgeAI.com 使用前请阅读授权与免责声明。</p>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-cpp.min.js"></script>
+  <script>
+    (function () {
+      document.querySelectorAll('.api-example').forEach(function (el) {
+        var wrap = el.querySelector('.copy-wrap');
+        if (wrap && el.querySelector('pre')) {
+          var bar = document.createElement('div');
+          bar.className = 'api-example-term-bar';
+          bar.innerHTML = '<span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>';
+          el.insertBefore(bar, wrap);
+        }
+      });
+    })();
+    (function () {
+      var lang = window.I18N.getLang();
+      window.I18N.applyLang(lang, 'api');
+      if (window.Prism) window.Prism.highlightAll();
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+      document.querySelectorAll('.nav-lang .lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var l = btn.getAttribute('data-lang');
+          window.I18N.setLang(l);
+          window.I18N.applyLang(l, 'api');
+          document.querySelectorAll('.nav-lang .lang-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          if (window.Prism) window.Prism.highlightAll();
+        });
+      });
+    })();
+    (function () {
+      var nav = document.getElementById('main-nav');
+      var toggle = document.getElementById('nav-toggle');
+      if (nav && toggle) toggle.addEventListener('click', function () { nav.classList.toggle('nav-open'); });
+    })();
+  </script>
+</body>
+
+</html>
